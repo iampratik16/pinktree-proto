@@ -50,19 +50,21 @@ export default function Header() {
     [pathname],
   );
 
+  // Routes that open with a dark, full-bleed hero need light header text
+  // until the user scrolls into the solid paper header.
+  const darkHero = pathname === "/" || /^\/work\/[^/]+$/.test(pathname);
+  const overHero = darkHero && !scrolled;
+
   return (
     <>
       <header
         data-scrolled={scrolled}
         data-hidden={hidden}
-        className="fixed inset-x-0 top-0 z-[800] transition-[transform,background-color,border-color] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] data-[hidden=true]:-translate-y-full data-[scrolled=true]:border-b data-[scrolled=true]:border-(--color-hairline) data-[scrolled=true]:bg-(--color-paper)/80 data-[scrolled=true]:backdrop-blur-md"
+        data-over-hero={overHero}
+        className="group/header fixed inset-x-0 top-0 z-[800] text-(--color-ink) transition-[transform,background-color,border-color] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] data-[hidden=true]:-translate-y-full data-[over-hero=true]:text-(--color-paper-on-dark) data-[scrolled=true]:border-b data-[scrolled=true]:border-(--color-hairline) data-[scrolled=true]:bg-(--color-paper)/80 data-[scrolled=true]:backdrop-blur-md"
       >
         <div className="container-page flex h-[var(--header-h,5rem)] items-center justify-between">
-          <TransitionLink
-            href="/"
-            aria-label="Pink Tree Media — home"
-            className="text-(--color-ink)"
-          >
+          <TransitionLink href="/" aria-label="Pink Tree Media — home">
             <Logo />
           </TransitionLink>
 
@@ -72,14 +74,14 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 data-active={isActive(item.href)}
-                className="link-underline text-sm tracking-tight text-(--color-ink) data-[active=true]:text-(--color-accent)"
+                className="link-underline text-sm tracking-tight data-[active=true]:text-(--color-accent)"
               >
                 {item.label}
               </TransitionLink>
             ))}
             <TransitionLink
               href="/contact"
-              className="rounded-full border border-(--color-ink)/25 px-5 py-2.5 text-sm tracking-tight text-(--color-ink) transition-colors duration-500 hover:border-(--color-accent) hover:text-(--color-accent)"
+              className="rounded-full border border-current/30 px-5 py-2.5 text-sm tracking-tight transition-colors duration-500 hover:text-(--color-accent)"
             >
               Enquire
             </TransitionLink>
@@ -90,7 +92,8 @@ export default function Header() {
             aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
-            className="relative z-[1001] flex size-10 items-center justify-center md:hidden"
+            data-open={menuOpen}
+            className="relative z-[1001] flex size-10 items-center justify-center data-[open=true]:text-(--color-paper-on-dark) md:hidden"
           >
             <span className="sr-only">{menuOpen ? "Close menu" : "Open menu"}</span>
             <span

@@ -294,6 +294,30 @@
     will-change: transform;
   }
 
+  /* Hero scroll cue — a line that draws down and resets */
+  .scroll-cue {
+    transform-origin: top;
+    animation: scroll-cue 2.4s var(--ease-in-out-quint) infinite;
+  }
+  @keyframes scroll-cue {
+    0% {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    35% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+    70% {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scaleY(0) translateY(100%);
+      opacity: 0;
+    }
+  }
+
   /* Accessible skip link */
   .skip-link {
     position: fixed;
