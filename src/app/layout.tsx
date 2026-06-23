@@ -1,6 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { fraunces, inter } from "@/lib/fonts";
 import { SITE } from "@/lib/site";
+import SmoothScroll from "@/components/providers/SmoothScroll";
+import RevealObserver from "@/components/providers/RevealObserver";
+import Cursor from "@/components/providers/Cursor";
+import PageTransition from "@/components/providers/PageTransition";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
+import FloatingActions from "@/components/layout/FloatingActions";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -45,7 +52,20 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <SmoothScroll />
+        <RevealObserver />
+        <Cursor />
+        <PageTransition>
+          <a href="#main" className="skip-link">
+            Skip to content
+          </a>
+          <Header />
+          <main id="main">{children}</main>
+          <Footer />
+          <FloatingActions />
+        </PageTransition>
+      </body>
     </html>
   );
 }

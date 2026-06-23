@@ -38,6 +38,7 @@
   --container-max: 1600px;
   --gutter: clamp(1.25rem, 5vw, 6rem);
   --section-y: clamp(5rem, 12vh, 12rem);
+  --header-h: 5rem;
 
   /* ---- Motion ------------------------------------------------------------ */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -63,6 +64,7 @@
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     scroll-behavior: auto; /* Lenis owns smooth scroll */
+    scroll-padding-top: var(--header-h);
   }
 
   /* Lenis applies these — defined here so SSR has them before hydration */
@@ -200,6 +202,80 @@
     background-color: var(--color-hairline);
     border: 0;
   }
+
+  /* Bespoke cursor */
+  .cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    pointer-events: none;
+    opacity: 0;
+    mix-blend-mode: multiply;
+    transition:
+      width 0.4s var(--ease-out-expo),
+      height 0.4s var(--ease-out-expo),
+      background-color 0.4s var(--ease-out-expo),
+      opacity 0.3s linear;
+  }
+  .cursor-dot[data-active="true"] {
+    width: 46px;
+    height: 46px;
+    background-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
+  /* Keep the native cursor visible too (accessibility); just hide the text caret feel */
+  html.has-custom-cursor {
+    cursor: auto;
+  }
+
+  /* Page-transition curtain */
+  .page-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: grid;
+    place-items: center;
+    background-color: var(--color-ink);
+    transform: translateY(100%);
+    pointer-events: none;
+    will-change: transform;
+  }
+  .page-curtain[data-phase="cover"] {
+    transform: translateY(0);
+    transition: transform 0.62s var(--ease-in-out-quint);
+    pointer-events: auto;
+  }
+  .page-curtain[data-phase="reveal"] {
+    transform: translateY(-100%);
+    transition: transform 0.72s var(--ease-in-out-quint);
+    pointer-events: auto;
+  }
+  .page-curtain__mark {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: var(--color-paper-on-dark);
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .page-curtain[data-phase="cover"] .page-curtain__mark {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity 0.5s var(--ease-out-expo) 0.12s,
+      transform 0.6s var(--ease-out-expo) 0.12s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-curtain {
+    display: none !important;
+  }
 }
 
 /* =============================================================================
@@ -211,6 +287,29 @@
   .line-mask {
     overflow: hidden;
     display: block;
+  }
+
+  /* SplitText line wrapper (when not using the built-in mask) */
+  .split-line {
+    will-change: transform;
+  }
+
+  /* Accessible skip link */
+  .skip-link {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    z-index: 9500;
+    transform: translate(-50%, -120%);
+    background-color: var(--color-ink);
+    color: var(--color-paper-on-dark);
+    padding: 0.75rem 1.25rem;
+    border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+    font-size: 0.875rem;
+    transition: transform 0.3s var(--ease-out-expo);
+  }
+  .skip-link:focus-visible {
+    transform: translate(-50%, 0);
   }
 
   [data-reveal] {
