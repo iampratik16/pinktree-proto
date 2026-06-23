@@ -48,7 +48,10 @@ export default function RootLayout({
         {/* Enable JS-gated reveal styles before paint to avoid any flash. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add('js')`,
+            __html:
+              "document.documentElement.classList.add('js');" +
+              // Failsafe: if GSAP is slow or blocked, reveal split headings anyway.
+              "setTimeout(function(){document.documentElement.classList.add('gsap-failsafe')},2500);",
           }}
         />
       </head>

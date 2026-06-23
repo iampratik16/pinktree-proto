@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, type ReactNode } from "react";
-import { registerGsap, gsap, ScrollTrigger } from "@/lib/gsap";
+import { loadGsap } from "@/lib/gsap";
 
 type Props = {
   children: ReactNode;
@@ -12,7 +12,8 @@ type Props = {
 
 /**
  * Subtle vertical parallax (capped travel) tied to scroll. No-op under reduced
- * motion. Wrap an over-sized media element so the parallax never reveals edges.
+ * motion. GSAP is dynamically imported. Wrap an over-sized media element so the
+ * parallax never reveals edges.
  */
 export default function Parallax({ children, amount = 0.1, className = "" }: Props) {
   const ref = useRef<HTMLDivElement>(null);
@@ -22,29 +23,30 @@ export default function Parallax({ children, amount = 0.1, className = "" }: Pro
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    registerGsap();
     const travel = Math.min(Math.abs(amount), 0.12) * 100;
+    let revert = () => {};
+    let cancelled = false;
 
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        el,
-        { yPercent: -travel / 2 },
-        {
-          yPercent: travel / 2,
-          ease: "none",
-          scrollTrigger: {
-            trigger: el,
-            start: "top bottom",
-            end: "bottom top",
-            scrub: true,
+    loadGsap().then(({ gsap, ScrollTrigger }) => {
+      if (cancelled) return;
+      const ctx = gsap.context(() => {
+        gsap.fromTo(
+          el,
+          { yPercent: -travel / 2 },
+          {
+            yPercent: travel / 2,
+            ease: "none",
+            scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true },
           },
-        },
-      );
-    }, el);
+        );
+      }, el);
+      revert = () => ctx.revert();
+      ScrollTrigger.refresh();
+    });
 
     return () => {
-      ctx.revert();
-      ScrollTrigger.refresh();
+      cancelled = true;
+      revert();
     };
   }, [amount]);
 

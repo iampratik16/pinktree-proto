@@ -294,6 +294,17 @@
     will-change: transform;
   }
 
+  /* Hide split headings on JS-capable browsers until animated, to avoid a
+     flash of static text. Revealed by .is-split, by reduced-motion, or by the
+     failsafe class (set if GSAP is slow/blocked). */
+  html.js [data-split]:not(.is-split) {
+    opacity: 0;
+  }
+  html.js.gsap-failsafe [data-split],
+  html.js [data-split].is-split {
+    opacity: 1;
+  }
+
   /* Hero scroll cue — a line that draws down and resets */
   .scroll-cue {
     transform-origin: top;
@@ -384,5 +395,8 @@
   html.js [data-reveal-media],
   html.js [data-reveal-media].is-in {
     clip-path: none !important;
+  }
+  html.js [data-split] {
+    opacity: 1 !important;
   }
 }

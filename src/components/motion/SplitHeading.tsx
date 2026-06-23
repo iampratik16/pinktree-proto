@@ -1,7 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, type ElementType } from "react";
-import { registerGsap, gsap, SplitText } from "@/lib/gsap";
+import { loadGsap } from "@/lib/gsap";
 
 type Props = {
   children: string;
@@ -13,10 +13,11 @@ type Props = {
 };
 
 /**
- * Line-by-line headline reveal via GSAP SplitText with per-line masks. The raw
- * text is server-rendered for SEO and no-JS; the split/animation only runs on
- * capable clients and is skipped entirely under reduced motion. `autoSplit`
- * re-splits on resize/font-load and `onSplit` re-runs the reveal cleanly.
+ * Line-by-line headline reveal via GSAP SplitText with per-line masks. GSAP is
+ * dynamically imported. The element carries `data-split`, which globals.css
+ * hides on JS-capable browsers until animated — preventing a flash of static
+ * text before the reveal. Reduced motion and a load failsafe keep text visible
+ * if animation is disabled or never loads. SEO/no-JS see the raw text.
  */
 export default function SplitHeading({
   children,
@@ -30,36 +31,52 @@ export default function SplitHeading({
   useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    registerGsap();
+    const reveal = () => el.classList.add("is-split");
 
-    const ctx = gsap.context(() => {
-      const split = SplitText.create(el, {
-        type: "lines",
-        mask: "lines",
-        autoSplit: true,
-        linesClass: "split-line",
-        onSplit: (self) =>
-          gsap.from(self.lines, {
-            yPercent: 110,
-            duration: 1.1,
-            ease: "expo.out",
-            stagger: 0.09,
-            delay,
-            ...(trigger === "scroll"
-              ? { scrollTrigger: { trigger: el, start: "top 82%", once: true } }
-              : {}),
-          }),
-      });
-      return () => split.revert();
-    }, el);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      reveal();
+      return;
+    }
 
-    return () => ctx.revert();
+    let revert = () => {};
+    let cancelled = false;
+
+    loadGsap().then(({ gsap, SplitText }) => {
+      if (cancelled) return;
+      const ctx = gsap.context(() => {
+        const split = SplitText.create(el, {
+          type: "lines",
+          mask: "lines",
+          autoSplit: true,
+          linesClass: "split-line",
+          onSplit: (self) => {
+            reveal();
+            return gsap.from(self.lines, {
+              yPercent: 110,
+              duration: 1.1,
+              ease: "expo.out",
+              stagger: 0.09,
+              delay,
+              ...(trigger === "scroll"
+                ? { scrollTrigger: { trigger: el, start: "top 82%", once: true } }
+                : {}),
+            });
+          },
+        });
+        return () => split.revert();
+      }, el);
+      revert = () => ctx.revert();
+    });
+
+    return () => {
+      cancelled = true;
+      revert();
+    };
   }, [children, trigger, delay]);
 
   return (
-    <Tag ref={ref} className={className}>
+    <Tag ref={ref} data-split className={className}>
       {children}
     </Tag>
   );
