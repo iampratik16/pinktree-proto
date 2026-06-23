@@ -1,5 +1,5 @@
 import Video from "@/components/media/Video";
-import SplitHeading from "@/components/motion/SplitHeading";
+import MaskHeading from "@/components/motion/MaskHeading";
 import { loop } from "@/lib/media";
 
 const homeHero = loop(
@@ -25,14 +25,13 @@ export default function Hero() {
         >
           Pink Tree Media — UK Creative Consultancy
         </p>
-        <SplitHeading
+        <MaskHeading
           as="h1"
-          trigger="load"
-          delay={0.25}
+          delay={40}
           className="display mt-7 max-w-[18ch] text-(--color-paper-on-dark)"
         >
           Complete marketing solutions for ambitious brands.
-        </SplitHeading>
+        </MaskHeading>
       </div>
 
       {/* Scroll cue */}

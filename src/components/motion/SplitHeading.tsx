@@ -49,6 +49,9 @@ export default function SplitHeading({
           type: "lines",
           mask: "lines",
           autoSplit: true,
+          // Don't let SplitText add aria-label (prohibited on <p>); the raw
+          // text remains in the DOM in order for assistive tech.
+          aria: "none",
           linesClass: "split-line",
           onSplit: (self) => {
             reveal();

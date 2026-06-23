@@ -11,7 +11,7 @@ export default function Footer() {
       <div className="container-page section">
         {/* Closing invitation */}
         <Reveal>
-          <p className="eyebrow text-(--color-paper-on-dark)/60">Start a conversation</p>
+          <p className="eyebrow text-(--color-paper-on-dark)/70">Start a conversation</p>
           <TransitionLink
             href="/contact"
             className="group mt-8 inline-flex items-end gap-4"
@@ -29,14 +29,14 @@ export default function Footer() {
         <div className="mt-16 grid grid-cols-2 gap-10 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
             <p className="font-[var(--font-display)] text-2xl font-light">{SITE.name}</p>
-            <p className="mt-4 max-w-[28ch] text-sm leading-relaxed text-(--color-paper-on-dark)/55">
+            <p className="mt-4 max-w-[28ch] text-sm leading-relaxed text-(--color-paper-on-dark)/75">
               A UK luxury creative consultancy. Complete marketing solutions for
               ambitious brands.
             </p>
           </div>
 
           <nav aria-label="Footer" className="flex flex-col gap-3">
-            <p className="eyebrow text-(--color-paper-on-dark)/40">Menu</p>
+            <p className="eyebrow text-(--color-paper-on-dark)/70">Menu</p>
             {NAV.map((item) => (
               <TransitionLink
                 key={item.href}
@@ -49,7 +49,7 @@ export default function Footer() {
           </nav>
 
           <div className="flex flex-col gap-3">
-            <p className="eyebrow text-(--color-paper-on-dark)/40">Contact</p>
+            <p className="eyebrow text-(--color-paper-on-dark)/70">Contact</p>
             <a
               href={`mailto:${CONTACT.email}`}
               className="link-underline w-fit text-sm text-(--color-paper-on-dark)/85 hover:text-(--color-paper-on-dark)"
@@ -74,7 +74,7 @@ export default function Footer() {
           </div>
 
           <address className="not-italic">
-            <p className="eyebrow text-(--color-paper-on-dark)/40">Studio</p>
+            <p className="eyebrow text-(--color-paper-on-dark)/70">Studio</p>
             <p className="mt-3 text-sm leading-relaxed text-(--color-paper-on-dark)/85">
               {CONTACT.address.street}
               <br />
@@ -87,7 +87,7 @@ export default function Footer() {
           </address>
         </div>
 
-        <div className="mt-20 flex flex-col items-start justify-between gap-3 text-xs text-(--color-paper-on-dark)/40 sm:flex-row sm:items-center">
+        <div className="mt-20 flex flex-col items-start justify-between gap-3 text-xs text-(--color-paper-on-dark)/70 sm:flex-row sm:items-center">
           <p>
             © {year} {SITE.name}. All rights reserved.
           </p>

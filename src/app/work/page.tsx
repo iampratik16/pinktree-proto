@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/motion/Reveal";
-import SplitHeading from "@/components/motion/SplitHeading";
+import MaskHeading from "@/components/motion/MaskHeading";
 import WorkCard from "@/components/work/WorkCard";
 import { getAllCaseStudies } from "@/content";
 
@@ -21,13 +21,12 @@ export default function WorkIndex() {
         <Reveal as="p" className="eyebrow">
           Selected work
         </Reveal>
-        <SplitHeading
+        <MaskHeading
           as="h1"
-          trigger="load"
           className="mt-6 max-w-[16ch] text-display font-light leading-[1.0] tracking-tight"
         >
           Depth over breadth.
-        </SplitHeading>
+        </MaskHeading>
         <Reveal delay={120}>
           <p className="mt-8 max-w-[52ch] text-h3 font-light leading-relaxed text-(--color-ink-soft)">
             A small number of brands, handled completely. Each project below shows
@@ -56,6 +55,7 @@ export default function WorkIndex() {
               study={study}
               index={i + 1}
               feature={i === 0}
+              headingLevel="h2"
               sizes={i === 0 ? "100vw" : "(min-width: 768px) 46vw, 100vw"}
             />
           </li>

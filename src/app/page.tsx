@@ -48,7 +48,7 @@ export default function Home() {
                 as="li"
                 className="group flex items-baseline gap-4 border-t border-(--color-hairline) py-6 lg:border-l lg:border-t-0 lg:px-7 lg:py-0 lg:first:pl-0"
               >
-                <span className="eyebrow text-(--color-accent)">
+                <span className="eyebrow text-(--color-accent-ink)">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <span className="text-h3 font-[var(--font-display)] font-light tracking-tight">
@@ -93,7 +93,7 @@ export default function Home() {
       {/* Approach teaser */}
       <section className="section bg-(--color-ink) text-(--color-paper-on-dark)">
         <div className="container-page grid gap-y-10 md:grid-cols-12">
-          <Reveal as="p" className="eyebrow text-(--color-paper-on-dark)/55 md:col-span-3">
+          <Reveal as="p" className="eyebrow text-(--color-paper-on-dark)/70 md:col-span-3">
             Our approach
           </Reveal>
           <div className="md:col-span-8 md:col-start-5">

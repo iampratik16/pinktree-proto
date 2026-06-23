@@ -18,7 +18,7 @@ export default function SmoothScroll() {
     let cleanup = () => {};
     let cancelled = false;
 
-    (async () => {
+    const init = async () => {
       const [{ default: Lenis }, { gsap, ScrollTrigger }] = await Promise.all([
         import("lenis"),
         loadGsap(),
@@ -48,10 +48,19 @@ export default function SmoothScroll() {
         lenis.destroy();
         window.__lenis = undefined;
       };
-    })();
+    };
+
+    // Defer to idle so animation libraries don't compete with hydration/paint
+    // (keeps TBT low on throttled mobile). Falls back to a short timeout.
+    const hasRic = typeof window.requestIdleCallback === "function";
+    const handle = hasRic
+      ? window.requestIdleCallback(() => init(), { timeout: 600 })
+      : window.setTimeout(() => init(), 200);
 
     return () => {
       cancelled = true;
+      if (hasRic) window.cancelIdleCallback(handle as number);
+      else window.clearTimeout(handle as number);
       cleanup();
     };
   }, []);

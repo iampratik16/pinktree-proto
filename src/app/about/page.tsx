@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/motion/Reveal";
 import SplitHeading from "@/components/motion/SplitHeading";
+import MaskHeading from "@/components/motion/MaskHeading";
 import Figure from "@/components/media/Figure";
 import Button from "@/components/ui/Button";
 import { img } from "@/lib/media";
@@ -43,13 +44,12 @@ export default function AboutPage() {
           About
         </Reveal>
         <div className="md:col-span-9">
-          <SplitHeading
+          <MaskHeading
             as="h1"
-            trigger="load"
             className="max-w-[20ch] text-h1 font-light leading-[1.05] tracking-tight"
           >
             A consultancy built on taste, restraint and the long view.
-          </SplitHeading>
+          </MaskHeading>
         </div>
       </header>
 
@@ -68,7 +68,7 @@ export default function AboutPage() {
               delay={i * 60}
               className="border-t border-(--color-hairline) py-10 first:border-t-0 first:pt-0"
             >
-              <dt className="eyebrow text-(--color-accent)">{b.eyebrow}</dt>
+              <dt className="eyebrow text-(--color-accent-ink)">{b.eyebrow}</dt>
               <dd className="mt-5 text-h3 font-light leading-relaxed">{b.body}</dd>
             </Reveal>
           ))}

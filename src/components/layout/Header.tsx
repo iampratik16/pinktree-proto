@@ -74,7 +74,7 @@ export default function Header() {
                 key={item.href}
                 href={item.href}
                 data-active={isActive(item.href)}
-                className="link-underline text-sm tracking-tight data-[active=true]:text-(--color-accent)"
+                className="link-underline text-sm tracking-tight data-[active=true]:font-medium data-[active=true]:underline data-[active=true]:decoration-1 data-[active=true]:underline-offset-[6px]"
               >
                 {item.label}
               </TransitionLink>

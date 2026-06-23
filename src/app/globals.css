@@ -12,7 +12,8 @@
   --color-ink: #14110f; /* warm near-black — primary text / dark sections */
   --color-ink-soft: #6b645c; /* secondary text, captions, labels */
   --color-hairline: #e2dcd2; /* borders, dividers, 1px rules */
-  --color-accent: #a86b72; /* rosewood — used sparingly */
+  --color-accent: #a86b72; /* rosewood — hover/borders/large display */
+  --color-accent-ink: #8e4f57; /* deeper rosewood — small accent TEXT on paper (AA 5.5:1) */
   --color-accent-soft: #d8c2c5; /* tints, subtle fills */
   --color-paper-on-dark: #efeae1; /* text on ink sections */
   --color-hairline-dark: #2a2521; /* hairlines on dark sections */
@@ -305,6 +306,29 @@
     opacity: 1;
   }
 
+  /* CSS-only word "focus-in" reveal for above-the-fold (LCP) headings. Opacity
+     stays 1 so the text is PAINTED immediately (counts for LCP right away); the
+     reveal is a blur→sharp + slight rise. No JS, no clip that hides the text. */
+  .rl-word {
+    display: inline-block;
+  }
+  html.js .rl-word {
+    transform: translateY(0.32em);
+    filter: blur(7px);
+    animation: rl-focus 0.75s var(--ease-out-expo) both;
+    animation-delay: calc(var(--rl-base, 0ms) + var(--i, 0) * 0.05s);
+  }
+  @keyframes rl-focus {
+    from {
+      transform: translateY(0.32em);
+      filter: blur(7px);
+    }
+    to {
+      transform: translateY(0);
+      filter: blur(0);
+    }
+  }
+
   /* Hero scroll cue — a line that draws down and resets */
   .scroll-cue {
     transform-origin: top;
@@ -398,5 +422,10 @@
   }
   html.js [data-split] {
     opacity: 1 !important;
+  }
+  html.js .rl-word {
+    transform: none !important;
+    filter: none !important;
+    animation: none !important;
   }
 }

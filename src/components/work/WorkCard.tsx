@@ -12,9 +12,17 @@ type Props = {
   /** Larger hero treatment for the first card. */
   feature?: boolean;
   sizes?: string;
+  /** Heading level for the client name, to keep document outline sequential. */
+  headingLevel?: "h2" | "h3";
 };
 
-export default function WorkCard({ study, index, feature = false, sizes }: Props) {
+export default function WorkCard({
+  study,
+  index,
+  feature = false,
+  sizes,
+  headingLevel: Heading = "h3",
+}: Props) {
   const aspect = feature ? "16 / 10" : "4 / 3";
   const imgSizes = sizes ?? (feature ? "100vw" : "(min-width: 768px) 50vw, 100vw");
 
@@ -55,9 +63,9 @@ export default function WorkCard({ study, index, feature = false, sizes }: Props
               {String(index).padStart(2, "0")}
             </span>
           )}
-          <h3 className="mt-2 text-h3 font-[var(--font-display)] tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
+          <Heading className="mt-2 text-h3 font-[var(--font-display)] tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
             {study.client}
-          </h3>
+          </Heading>
           <p className="mt-1.5 max-w-[42ch] text-(--color-ink-soft)">
             {study.oneLineOutcome}
           </p>

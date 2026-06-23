@@ -7,11 +7,15 @@ import { Fraunces, Inter } from "next/font/google";
  */
 export const fraunces = Fraunces({
   subsets: ["latin"],
-  display: "swap",
+  // "optional" avoids a late web-font swap re-painting the LCP headline on slow
+  // connections (stable, fast LCP). Cached / fast loads still get Fraunces;
+  // first cold loads briefly use the size-adjusted fallback.
+  display: "optional",
   variable: "--font-fraunces",
   // Variable weight axis is implicit; opsz drives the high-contrast display feel.
+  // No italic (unused) keeps the display-font payload small for fast LCP.
   axes: ["opsz"],
-  style: ["normal", "italic"],
+  style: ["normal"],
 });
 
 /**

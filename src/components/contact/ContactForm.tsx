@@ -72,7 +72,7 @@ export default function ContactForm() {
   if (status === "success") {
     return (
       <div role="status" aria-live="polite" className="py-8">
-        <p className="eyebrow text-(--color-accent)">Thank you</p>
+        <p className="eyebrow text-(--color-accent-ink)">Thank you</p>
         <p className="mt-6 max-w-[34ch] text-h2 font-[var(--font-display)] font-light leading-tight tracking-tight">
           Your enquiry is with us. We’ll be in touch shortly.
         </p>
@@ -124,7 +124,7 @@ export default function ContactForm() {
       />
 
       {serverError && (
-        <p role="alert" className="text-sm text-(--color-accent)">
+        <p role="alert" className="text-sm text-(--color-accent-ink)">
           {serverError}
         </p>
       )}
@@ -161,7 +161,7 @@ function Field({ id, name, label, type, required, autoComplete, value, error, on
     <div className="flex flex-col">
       <label htmlFor={id} className="eyebrow mb-3 text-(--color-ink)">
         {label}
-        {required && <span className="text-(--color-accent)"> *</span>}
+        {required && <span className="text-(--color-accent-ink)"> *</span>}
       </label>
       <input
         id={id}
@@ -177,7 +177,7 @@ function Field({ id, name, label, type, required, autoComplete, value, error, on
         className="border-b border-(--color-hairline) bg-transparent pb-3 text-lg outline-none transition-colors duration-300 focus:border-(--color-accent) aria-[invalid=true]:border-(--color-accent)"
       />
       {error && (
-        <span id={`${id}-error`} className="mt-2 text-sm text-(--color-accent)">
+        <span id={`${id}-error`} className="mt-2 text-sm text-(--color-accent-ink)">
           {error}
         </span>
       )}
@@ -198,7 +198,7 @@ function TextArea({
     <div className="flex flex-col">
       <label htmlFor={id} className="eyebrow mb-3 text-(--color-ink)">
         {label}
-        {required && <span className="text-(--color-accent)"> *</span>}
+        {required && <span className="text-(--color-accent-ink)"> *</span>}
       </label>
       <textarea
         id={id}
@@ -213,7 +213,7 @@ function TextArea({
         className="resize-none border-b border-(--color-hairline) bg-transparent pb-3 text-lg outline-none transition-colors duration-300 focus:border-(--color-accent) aria-[invalid=true]:border-(--color-accent)"
       />
       {error && (
-        <span id={`${id}-error`} className="mt-2 text-sm text-(--color-accent)">
+        <span id={`${id}-error`} className="mt-2 text-sm text-(--color-accent-ink)">
           {error}
         </span>
       )}

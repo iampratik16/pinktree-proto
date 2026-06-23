@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Reveal from "@/components/motion/Reveal";
-import SplitHeading from "@/components/motion/SplitHeading";
+import MaskHeading from "@/components/motion/MaskHeading";
 import ContactForm from "@/components/contact/ContactForm";
 import { WhatsApp, Instagram } from "@/components/ui/icons";
 import { CONTACT, whatsappHref } from "@/lib/site";
@@ -19,13 +19,12 @@ export default function ContactPage() {
         <Reveal as="p" className="eyebrow">
           Contact
         </Reveal>
-        <SplitHeading
+        <MaskHeading
           as="h1"
-          trigger="load"
           className="mt-6 max-w-[18ch] text-display font-light leading-[1.0] tracking-tight"
         >
           Start a conversation.
-        </SplitHeading>
+        </MaskHeading>
       </header>
 
       <div className="grid gap-x-16 gap-y-20 pb-(--section-y) lg:grid-cols-12">

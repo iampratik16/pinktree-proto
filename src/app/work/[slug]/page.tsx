@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/motion/Reveal";
-import SplitHeading from "@/components/motion/SplitHeading";
+import MaskHeading from "@/components/motion/MaskHeading";
 import Figure from "@/components/media/Figure";
 import Img from "@/components/media/Img";
 import Video from "@/components/media/Video";
@@ -88,14 +88,13 @@ export default async function CaseStudyPage({
           <Reveal as="p" className="eyebrow text-(--color-paper-on-dark)/70">
             {study.sector}
           </Reveal>
-          <SplitHeading
+          <MaskHeading
             as="h1"
-            trigger="load"
-            delay={0.2}
+            delay={100}
             className="mt-6 max-w-[16ch] text-display font-light leading-[1.0] tracking-tight"
           >
             {study.client}
-          </SplitHeading>
+          </MaskHeading>
           <Reveal delay={150}>
             <ul className="mt-8 flex flex-wrap gap-x-5 gap-y-2">
               {study.disciplines.map((d) => (
@@ -203,7 +202,7 @@ export default async function CaseStudyPage({
       {study.results.length > 0 && (
         <section className="section bg-(--color-ink) text-(--color-paper-on-dark)">
           <div className="container-page">
-            <Reveal as="p" className="eyebrow text-(--color-paper-on-dark)/55">
+            <Reveal as="p" className="eyebrow text-(--color-paper-on-dark)/70">
               Results
             </Reveal>
             <ul className="mt-14 grid gap-x-12 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">

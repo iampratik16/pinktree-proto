@@ -36,12 +36,15 @@ export default function Video({
   const [posterOnly, setPosterOnly] = useState(false);
   const blur = getBlur(media.poster);
 
-  // Decide whether to ever play video (reduced motion / save-data → poster only).
+  // Decide whether to ever play video. Poster only under reduced motion,
+  // Save-Data, on small/mobile viewports (saves bandwidth + keeps LCP fast),
+  // or when a Mux source hasn't been wired up yet.
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const smallScreen = window.matchMedia("(max-width: 767px)").matches;
     const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
     const saveData = nav.connection?.saveData === true;
-    if (reduced || saveData || media.provider === "mux") {
+    if (reduced || saveData || smallScreen || media.provider === "mux") {
       setPosterOnly(true);
       return;
     }
