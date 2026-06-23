@@ -1,26 +1,265 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* =============================================================================
+   PINK TREE MEDIA — Design System ("Atelier")
+   Warm near-monochrome palette · one restrained rosewood accent · editorial
+   type · enormous whitespace · slow, weighty, inertia-based motion.
+   ========================================================================== */
+
+@theme {
+  /* ---- Colour ------------------------------------------------------------ */
+  --color-paper: #f5f2ec; /* warm bone / ivory — primary background */
+  --color-ink: #14110f; /* warm near-black — primary text / dark sections */
+  --color-ink-soft: #6b645c; /* secondary text, captions, labels */
+  --color-hairline: #e2dcd2; /* borders, dividers, 1px rules */
+  --color-accent: #a86b72; /* rosewood — used sparingly */
+  --color-accent-soft: #d8c2c5; /* tints, subtle fills */
+  --color-paper-on-dark: #efeae1; /* text on ink sections */
+  --color-hairline-dark: #2a2521; /* hairlines on dark sections */
+
+  /* ---- Type -------------------------------------------------------------- */
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Fluid type scale */
+  --text-display: clamp(2.75rem, 6vw, 7rem);
+  --text-display--line-height: 0.98;
+  --text-h1: clamp(2.25rem, 4.5vw, 4.5rem);
+  --text-h1--line-height: 1.02;
+  --text-h2: clamp(1.75rem, 3vw, 3rem);
+  --text-h2--line-height: 1.08;
+  --text-h3: clamp(1.25rem, 1.6vw, 1.75rem);
+  --text-h3--line-height: 1.2;
+  --text-body: clamp(1rem, 1.05vw, 1.1875rem);
+  --text-body--line-height: 1.6;
+  --text-eyebrow: 0.8125rem;
+
+  /* ---- Layout ------------------------------------------------------------ */
+  --container-max: 1600px;
+  --gutter: clamp(1.25rem, 5vw, 6rem);
+  --section-y: clamp(5rem, 12vh, 12rem);
+
+  /* ---- Motion ------------------------------------------------------------ */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+
+  /* ---- Radius ------------------------------------------------------------ */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+/* =============================================================================
+   Base
+   ========================================================================== */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: auto; /* Lenis owns smooth scroll */
+  }
+
+  /* Lenis applies these — defined here so SSR has them before hydration */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p {
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-paper);
+  }
+
+  /* Designed focus — visible, on-brand, keyboard-only */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* =============================================================================
+   Component utilities
+   ========================================================================== */
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  .section {
+    padding-block: var(--section-y);
+  }
+
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: var(--text-eyebrow);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-ink-soft);
+    line-height: 1;
+  }
+
+  .display {
+    font-family: var(--font-display);
+    font-size: var(--text-display);
+    line-height: var(--text-display--line-height);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+  }
+
+  /* Animated underline for inline links */
+  .link-underline {
+    position: relative;
+    display: inline-block;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .rule {
+    height: 1px;
+    width: 100%;
+    background-color: var(--color-hairline);
+    border: 0;
+  }
+}
+
+/* =============================================================================
+   Motion primitives — JS adds .is-in to play; without JS (or with reduced
+   motion) content is fully visible by default.
+   ========================================================================== */
+
+@layer utilities {
+  .line-mask {
+    overflow: hidden;
+    display: block;
+  }
+
+  [data-reveal] {
+    will-change: transform, opacity;
+  }
+  html.js [data-reveal]:not(.is-in) {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  html.js [data-reveal] {
+    transition:
+      opacity 1s var(--ease-out-expo),
+      transform 1.1s var(--ease-out-expo);
+  }
+  html.js [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  html.js [data-reveal-media]:not(.is-in) {
+    clip-path: inset(0 0 100% 0);
+  }
+  html.js [data-reveal-media] {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 1.2s var(--ease-out-expo);
+  }
+}
+
+/* =============================================================================
+   Reduced motion — mandatory.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html.js [data-reveal],
+  html.js [data-reveal].is-in {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  html.js [data-reveal-media],
+  html.js [data-reveal-media].is-in {
+    clip-path: none !important;
+  }
 }
