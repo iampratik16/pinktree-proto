@@ -55,7 +55,12 @@ export default function Header() {
       <header
         data-scrolled={scrolled}
         data-over-hero={overHero}
-        className="group/header fixed inset-x-0 top-0 z-[800] text-(--color-ink) transition-[background-color,border-color] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] data-[over-hero=true]:text-(--color-paper-on-dark) data-[scrolled=true]:border-b data-[scrolled=true]:border-(--color-hairline) data-[scrolled=true]:bg-(--color-paper)/80 data-[scrolled=true]:backdrop-blur-md"
+        className={`group/header fixed inset-x-0 top-0 transition-[background-color,border-color] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          menuOpen
+            ? // Above the menu overlay (z-900) so the close button + logo stay visible.
+              "z-[1000] text-(--color-paper-on-dark)"
+            : "z-[800] text-(--color-ink) data-[over-hero=true]:text-(--color-paper-on-dark) data-[scrolled=true]:border-b data-[scrolled=true]:border-(--color-hairline) data-[scrolled=true]:bg-(--color-paper)/80 data-[scrolled=true]:backdrop-blur-md"
+        }`}
       >
         <div className="container-page flex h-[var(--header-h,5rem)] items-center justify-between">
           <TransitionLink href="/" aria-label="Pink Tree Media — home">

@@ -95,12 +95,13 @@ export default function BendVideo({ media, className = "", sizes = "100vw" }: Pr
   const [playing, setPlaying] = useState(false);
   const blur = getBlur(media.poster);
 
-  // Poster-only under reduced motion / Save-Data / small screens.
+  // Poster-only under reduced motion or Data-Saver. The video DOES play on
+  // phones (plain autoplay loop — muted + playsInline); WebGL bend is desktop-
+  // only (the hover check below short-circuits on touch).
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const small = window.matchMedia("(max-width: 767px)").matches;
     const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
-    if (reduced || small || nav.connection?.saveData === true) setPosterOnly(true);
+    if (reduced || nav.connection?.saveData === true) setPosterOnly(true);
   }, []);
 
   // WebGL fluid bend (desktop, hover-capable). Uses the <video> as the texture.

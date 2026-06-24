@@ -41,10 +41,10 @@ export default function Video({
   // or when a Mux source hasn't been wired up yet.
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const smallScreen = window.matchMedia("(max-width: 767px)").matches;
     const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
     const saveData = nav.connection?.saveData === true;
-    if (reduced || saveData || smallScreen || media.provider === "mux") {
+    // Plays on phones too now; only poster under reduced-motion / Data-Saver / Mux.
+    if (reduced || saveData || media.provider === "mux") {
       setPosterOnly(true);
       return;
     }
