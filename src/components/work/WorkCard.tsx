@@ -2,7 +2,6 @@ import TransitionLink from "@/components/ui/TransitionLink";
 import Reveal from "@/components/motion/Reveal";
 import Img from "@/components/media/Img";
 import Video from "@/components/media/Video";
-import BendImage from "@/components/media/BendImage";
 import { ArrowUpRight } from "@/components/ui/icons";
 import type { CaseStudy } from "@/content/schema";
 
@@ -30,32 +29,29 @@ export default function WorkCard({
   const aspect = feature ? "16 / 10" : "4 / 3";
   const imgSizes = sizes ?? (feature ? "100vw" : "(min-width: 768px) 50vw, 100vw");
 
+  // The organic, morphing border lives on `.work-card-frame` (a separate layer
+  // filling the figure box). The media is inset on top with a STABLE rounded
+  // rect + overflow:hidden, so the image is never bent, scaled or clipped-morphed.
   const mediaBox = (
-    <div
-      className="relative overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)"
-      style={{ aspectRatio: aspect }}
-    >
-      {study.heroMedia.type === "video" ? (
-        <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
-          <Video media={study.heroMedia} className="size-full" sizes={imgSizes} />
-        </div>
-      ) : (
-        <BendImage
-          src={study.heroMedia.src}
-          className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]"
-        >
+    <div className="work-card-figure relative" style={{ aspectRatio: aspect }}>
+      <span aria-hidden className="work-card-frame absolute inset-0" />
+
+      <div className="absolute inset-[7px] z-[1] overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)">
+        {study.heroMedia.type === "video" ? (
+          <Video media={study.heroMedia} fill sizes={imgSizes} />
+        ) : (
           <Img media={study.heroMedia} fill sizes={imgSizes} className="size-full" />
-        </BendImage>
-      )}
+        )}
 
-      {study.placeholder && (
-        <span className="absolute left-4 top-4 rounded-full bg-(--color-ink)/70 px-3 py-1 text-xs tracking-wide text-(--color-paper-on-dark) backdrop-blur-sm">
-          In preparation
-        </span>
-      )}
+        {/* Subtle accent veil on hover */}
+        <span className="pointer-events-none absolute inset-0 bg-(--color-accent) opacity-0 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-[0.1]" />
 
-      {/* Subtle accent veil on hover */}
-      <span className="pointer-events-none absolute inset-0 bg-(--color-accent) opacity-0 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-[0.12]" />
+        {study.placeholder && (
+          <span className="absolute left-4 top-4 z-[2] rounded-full bg-(--color-ink)/70 px-3 py-1 text-xs tracking-wide text-(--color-paper-on-dark) backdrop-blur-sm">
+            In preparation
+          </span>
+        )}
+      </div>
     </div>
   );
 
@@ -63,7 +59,7 @@ export default function WorkCard({
     <TransitionLink
       href={`/work/${study.slug}`}
       data-cursor-label="View"
-      className="group block"
+      className="work-card group block"
     >
       {bare ? (
         <div className="relative">{mediaBox}</div>
