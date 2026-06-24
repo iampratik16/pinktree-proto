@@ -45,7 +45,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-GB" className={`${fraunces.variable} ${inter.variable}`}>
+    <html
+      lang="en-GB"
+      className={`${fraunces.variable} ${inter.variable}`}
+      // The inline script below adds the `js` (and later `gsap-failsafe`)
+      // classes before hydration; suppress the expected html-attribute diff so
+      // React doesn't discard and re-render the tree.
+      suppressHydrationWarning
+    >
       <head>
         {/* Enable JS-gated reveal styles before paint to avoid any flash. */}
         <script

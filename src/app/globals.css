@@ -306,6 +306,16 @@
     opacity: 1;
   }
 
+  /* Failsafe: never leave reveal content permanently hidden if the observer
+     doesn't fire (JS error, hydration recovery, etc.). */
+  html.js.gsap-failsafe [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+  html.js.gsap-failsafe [data-reveal-media] > * {
+    clip-path: inset(0 0 0 0);
+  }
+
   /* CSS-only word "focus-in" reveal for above-the-fold (LCP) headings. Opacity
      stays 1 so the text is PAINTED immediately (counts for LCP right away); the
      reveal is a blur→sharp + slight rise. No JS, no clip that hides the text. */
@@ -388,12 +398,17 @@
     transform: none;
   }
 
-  html.js [data-reveal-media]:not(.is-in) {
-    clip-path: inset(0 0 100% 0);
-  }
-  html.js [data-reveal-media] {
+  /* IMPORTANT: clip the CHILD, not the [data-reveal-media] element itself.
+     A clip-path that zeroes the observed element's box stops its own
+     IntersectionObserver from ever firing (it can't see a clipped-to-nothing
+     box) — so it would stay hidden forever. The wrapper stays unclipped and
+     observable; its single child carries the reveal clip. */
+  html.js [data-reveal-media] > * {
     clip-path: inset(0 0 0 0);
     transition: clip-path 1.2s var(--ease-out-expo);
+  }
+  html.js [data-reveal-media]:not(.is-in) > * {
+    clip-path: inset(0 0 100% 0);
   }
 }
 
@@ -416,8 +431,8 @@
     opacity: 1 !important;
     transform: none !important;
   }
-  html.js [data-reveal-media],
-  html.js [data-reveal-media].is-in {
+  html.js [data-reveal-media] > *,
+  html.js [data-reveal-media].is-in > * {
     clip-path: none !important;
   }
   html.js [data-split] {
