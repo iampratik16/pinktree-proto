@@ -1,6 +1,7 @@
 import TransitionLink from "@/components/ui/TransitionLink";
 import Reveal from "@/components/motion/Reveal";
 import BendImage from "@/components/media/BendImage";
+import Img from "@/components/media/Img";
 import Video from "@/components/media/Video";
 import { ArrowUpRight } from "@/components/ui/icons";
 import type { CaseStudy } from "@/content/schema";
@@ -16,6 +17,8 @@ type Props = {
   headingLevel?: "h2" | "h3";
   /** Skip the internal clip reveal (caller owns the animation, e.g. WorkGrid). */
   bare?: boolean;
+  /** Render a plain, fixed image (no liquid edge bend) — e.g. the Proof feature. */
+  noBend?: boolean;
 };
 
 export default function WorkCard({
@@ -25,14 +28,14 @@ export default function WorkCard({
   sizes,
   headingLevel: Heading = "h3",
   bare = false,
+  noBend = false,
 }: Props) {
   const aspect = feature ? "16 / 10" : "4 / 3";
   const imgSizes = sizes ?? (feature ? "100vw" : "(min-width: 768px) 50vw, 100vw");
 
-  // Hello Monday-style liquid edge lives in <BendImage>: a static WebGL texture
-  // under a fragment alpha mask whose LEFT/RIGHT edges wave toward the cursor
-  // while the image stays fixed and top/bottom stay flat. The box stays a stable
-  // rounded rect; bg is transparent so the wavy edges reveal the page behind.
+  // Image cards get the liquid-edge <BendImage> (cursor-driven mask, fixed
+  // image). `noBend` falls back to a plain static <Img>. The box stays a stable
+  // rounded rect with a transparent bg so the wavy edges reveal the page behind.
   const mediaBox = (
     <div
       className="relative overflow-hidden rounded-[var(--radius-sm)]"
@@ -40,6 +43,8 @@ export default function WorkCard({
     >
       {study.heroMedia.type === "video" ? (
         <Video media={study.heroMedia} fill sizes={imgSizes} />
+      ) : noBend ? (
+        <Img media={study.heroMedia} fill sizes={imgSizes} className="size-full" />
       ) : (
         <BendImage
           src={study.heroMedia.src}
@@ -48,9 +53,6 @@ export default function WorkCard({
           className="size-full"
         />
       )}
-
-      {/* Subtle accent veil on hover */}
-      <span className="pointer-events-none absolute inset-0 z-[2] bg-(--color-accent) opacity-0 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-[0.1]" />
 
       {study.placeholder && (
         <span className="absolute left-4 top-4 z-[3] rounded-full bg-(--color-ink)/70 px-3 py-1 text-xs tracking-wide text-(--color-paper-on-dark) backdrop-blur-sm">
@@ -61,11 +63,7 @@ export default function WorkCard({
   );
 
   return (
-    <TransitionLink
-      href={`/work/${study.slug}`}
-      data-cursor-label="View"
-      className="work-card group block"
-    >
+    <TransitionLink href={`/work/${study.slug}`} className="work-card group block">
       {bare ? (
         <div className="relative">{mediaBox}</div>
       ) : (
@@ -81,7 +79,7 @@ export default function WorkCard({
               {String(index).padStart(2, "0")}
             </span>
           )}
-          <Heading className="mt-2 text-h3 font-[var(--font-display)] tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
+          <Heading className="mt-2 text-h3 font-display tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
             {study.client}
           </Heading>
           <p className="mt-1.5 max-w-[42ch] text-(--color-ink-soft)">

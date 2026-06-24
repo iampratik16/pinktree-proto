@@ -10,22 +10,16 @@ import { NAV } from "@/lib/site";
 export default function Header() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    let last = window.scrollY;
-    const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 24);
-      // Hide on downward scroll past the hero; reveal on upward scroll.
-      setHidden(y > 140 && y > last && !menuOpen);
-      last = y;
-    };
+    // Pinned at the top at all times; just track whether we've scrolled past the
+    // hero so the bar can go from transparent to solid (it never hides).
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [menuOpen]);
+  }, []);
 
   // Close menu on route change.
   useEffect(() => {
@@ -60,9 +54,8 @@ export default function Header() {
     <>
       <header
         data-scrolled={scrolled}
-        data-hidden={hidden}
         data-over-hero={overHero}
-        className="group/header fixed inset-x-0 top-0 z-[800] text-(--color-ink) transition-[transform,background-color,border-color] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] data-[hidden=true]:-translate-y-full data-[over-hero=true]:text-(--color-paper-on-dark) data-[scrolled=true]:border-b data-[scrolled=true]:border-(--color-hairline) data-[scrolled=true]:bg-(--color-paper)/80 data-[scrolled=true]:backdrop-blur-md"
+        className="group/header fixed inset-x-0 top-0 z-[800] text-(--color-ink) transition-[background-color,border-color] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] data-[over-hero=true]:text-(--color-paper-on-dark) data-[scrolled=true]:border-b data-[scrolled=true]:border-(--color-hairline) data-[scrolled=true]:bg-(--color-paper)/80 data-[scrolled=true]:backdrop-blur-md"
       >
         <div className="container-page flex h-[var(--header-h,5rem)] items-center justify-between">
           <TransitionLink href="/" aria-label="Pink Tree Media — home">
@@ -124,7 +117,7 @@ export default function Header() {
             <TransitionLink
               key={item.href}
               href={item.href}
-              className="font-[var(--font-display)] text-5xl font-light tracking-tight transition-transform duration-500"
+              className="font-display text-5xl font-light tracking-tight transition-transform duration-500"
               style={{
                 transform: menuOpen ? "translateY(0)" : "translateY(20px)",
                 opacity: menuOpen ? 1 : 0,

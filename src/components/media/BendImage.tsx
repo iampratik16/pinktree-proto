@@ -3,10 +3,8 @@
 import { useEffect, useRef } from "react";
 
 // ── Tunable constants (kept subtle for the Atelier look) ─────────────────────
-const AMP = 0.06; // edge wave amplitude (how far the edges travel, in UV)
-const FREQ = 4.5; // number of waves down the edge
-const SPEED = 1.1; // wave travel speed
-const PROX = 1.8; // how tightly the bend concentrates near the cursor's Y
+const AMP = 0.07; // bulge depth — how far the nearest edge dents toward the cursor
+const PROX = 1.6; // how tightly the bulge concentrates near the cursor's Y (higher = tighter)
 const OVERSCAN = 0.15; // static image zoom so bulges have content; image stays undistorted
 const EASE = 0.1; // mouse + hover easing
 
@@ -25,8 +23,9 @@ const vertex = /* glsl */ `
 `;
 
 // FRAGMENT — the image is sampled at FIXED uv (cover-fit + a constant centre
-// zoom). Mouse/time NEVER touch imgUv, so the picture cannot move or distort.
-// Only the ALPHA MASK reads mouse/time: it waves the LEFT and RIGHT edges while
+// zoom). The cursor NEVER touches imgUv, so the picture cannot move or distort.
+// Only the ALPHA MASK reads the cursor: it dents the LEFT/RIGHT edges with a
+// single bulge that follows the pointer (arbitrary, NOT a periodic wave) while
 // the top and bottom stay perfectly flat.
 const fragment = /* glsl */ `
   precision highp float;
@@ -35,19 +34,15 @@ const fragment = /* glsl */ `
   uniform vec2 uPlaneSize;
   uniform vec2 uMouse;     // cursor 0..1, eased (y is flipped to uv space)
   uniform float uHover;    // 0..1, eased
-  uniform float uTime;
   uniform float uAmp;
-  uniform float uFreq;
-  uniform float uSpeed;
   uniform float uProx;
   uniform float uOverscan;
   varying vec2 vUv;
 
-  const float TAU = 6.2831853;
   const float FEATHER = 0.004; // soft mask edge (anti-alias)
 
   void main() {
-    // ---- IMAGE (FIXED): cover-fit + constant centre zoom. No mouse/time. ----
+    // ---- IMAGE (FIXED): cover-fit + constant centre zoom. No cursor input. ----
     // Guard: before the texture loads uImageSize is the plane size → plain fit
     // (ratio = 1), never a square crop.
     vec2 ratio = vec2(
@@ -58,18 +53,20 @@ const fragment = /* glsl */ `
     vec2 imgUv = (coverUv - 0.5) / (1.0 + uOverscan) + 0.5; // static zoom ONLY
     vec4 color = texture2D(tMap, imgUv);
 
-    // ---- ALPHA MASK (MOVES): wavy left/right edges, flat top/bottom. ----
-    // Concentrate the bend vertically around the cursor's Y.
+    // ---- ALPHA MASK (MOVES): a single cursor-driven bulge, flat top/bottom. ----
+    // One smooth dent centred on the cursor's Y that follows the pointer — no
+    // clock-driven sine, so the deformation is arbitrary, not a marching wave.
     float dy = vUv.y - uMouse.y;
-    float prox = exp(-uProx * 6.0 * dy * dy);
-    float env = uHover * prox * uAmp;
+    float bulge = uHover * uAmp * exp(-uProx * 9.0 * dy * dy); // peak at cursor Y
 
-    // Travelling vertical sine → each edge insets within [0, env].
-    float phase = vUv.y * uFreq * TAU + uTime * uSpeed;
-    float left = env * (0.5 + 0.5 * sin(phase));
-    float right = env * (0.5 + 0.5 * sin(phase + 1.7)); // phase-shifted = organic
+    // The edge nearer the cursor reacts more, so the dent tracks the pointer
+    // left↔right instead of mirroring symmetrically.
+    float leftBias = smoothstep(0.7, 0.0, uMouse.x);
+    float rightBias = smoothstep(0.3, 1.0, uMouse.x);
+    float left = bulge * (0.3 + 0.7 * leftBias);
+    float right = bulge * (0.3 + 0.7 * rightBias);
 
-    // Opaque only between the (wavy) left and right boundaries.
+    // Opaque only between the (dented) left and right boundaries.
     float aL = smoothstep(left - FEATHER, left + FEATHER, vUv.x);
     float aR = 1.0 - smoothstep(1.0 - right - FEATHER, 1.0 - right + FEATHER, vUv.x);
     float alpha = color.a * aL * aR;
@@ -213,10 +210,7 @@ export default function BendImage({ src, alt, className = "", sizes }: Props) {
               uPlaneSize: { value: [1, 1] },
               uMouse: { value: [0.5, 0.5] },
               uHover: { value: 0 },
-              uTime: { value: 0 },
               uAmp: { value: AMP },
-              uFreq: { value: FREQ },
-              uSpeed: { value: SPEED },
               uProx: { value: PROX },
               uOverscan: { value: OVERSCAN },
             },
@@ -230,7 +224,6 @@ export default function BendImage({ src, alt, className = "", sizes }: Props) {
           const current = { x: 0.5, y: 0.5 };
           let targetHover = 0;
           let hover = 0;
-          let time = 0;
           let raf = 0;
           let running = false;
           let loaded = false;
@@ -260,18 +253,20 @@ export default function BendImage({ src, alt, className = "", sizes }: Props) {
             current.x = lerp(current.x, target.x, EASE);
             current.y = lerp(current.y, target.y, EASE);
             hover = lerp(hover, targetHover, EASE);
-            time += 0.016;
 
             const u = program.uniforms;
             u.uMouse.value[0] = current.x;
             u.uMouse.value[1] = current.y;
             u.uHover.value = hover;
-            u.uTime.value = time;
             render();
 
-            // The wave is time-driven: keep looping while hovered (so it undulates
-            // even with a still cursor) and while easing back; stop once at rest.
-            if (inView && (targetHover > 0 || hover > 0.002)) {
+            // Cursor-driven (no clock): render only until the eased values settle;
+            // pointermove / enter / leave restart the loop. Saves frames at rest.
+            const settled =
+              Math.abs(hover - targetHover) < 0.002 &&
+              Math.abs(current.x - target.x) < 0.0006 &&
+              Math.abs(current.y - target.y) < 0.0006;
+            if (inView && !settled) {
               raf = requestAnimationFrame(frame);
             } else {
               running = false;

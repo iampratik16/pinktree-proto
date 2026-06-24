@@ -73,7 +73,7 @@ export default function ContactForm() {
     return (
       <div role="status" aria-live="polite" className="py-8">
         <p className="eyebrow text-(--color-accent-ink)">Thank you</p>
-        <p className="mt-6 max-w-[34ch] text-h2 font-[var(--font-display)] font-light leading-tight tracking-tight">
+        <p className="mt-6 max-w-[34ch] text-h2 font-serif font-light leading-tight tracking-tight">
           Your enquiry is with us. We’ll be in touch shortly.
         </p>
       </div>

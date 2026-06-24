@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { fraunces, inter } from "@/lib/fonts";
+import { archivo, hanken, fraunces } from "@/lib/fonts";
 import { SITE } from "@/lib/site";
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import RevealObserver from "@/components/providers/RevealObserver";
@@ -47,7 +47,7 @@ export default function RootLayout({
   return (
     <html
       lang="en-GB"
-      className={`${fraunces.variable} ${inter.variable}`}
+      className={`${archivo.variable} ${hanken.variable} ${fraunces.variable}`}
       // The inline script below adds the `js` (and later `gsap-failsafe`)
       // classes before hydration; suppress the expected html-attribute diff so
       // React doesn't discard and re-render the tree.

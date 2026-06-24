@@ -31,7 +31,7 @@ export default function Home() {
           <div className="md:col-span-8 md:col-start-5">
             <SplitHeading
               as="p"
-              className="font-[var(--font-display)] text-h2 font-light leading-[1.15] tracking-tight"
+              className="font-serif text-h2 font-light leading-[1.15] tracking-tight"
             >
               A luxury creative consultancy handling every aspect of a brand’s
               marketing under one roof — quietly, and exceptionally well.
@@ -57,7 +57,7 @@ export default function Home() {
                 <span className="eyebrow text-(--color-accent-ink)">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="text-h3 font-[var(--font-display)] font-light tracking-tight">
+                <span className="text-h3 font-display font-light tracking-tight">
                   {cap}
                 </span>
               </Reveal>
@@ -86,7 +86,7 @@ export default function Home() {
         </div>
 
         <div className="mt-16">
-          <WorkCard study={feature} index={1} feature />
+          <WorkCard study={feature} index={1} feature noBend />
         </div>
 
         <div className="mt-16 grid gap-x-10 gap-y-20 md:mt-24 md:grid-cols-2">
@@ -105,7 +105,7 @@ export default function Home() {
           <div className="md:col-span-8 md:col-start-5">
             <SplitHeading
               as="p"
-              className="font-[var(--font-display)] text-h2 font-light leading-[1.18] tracking-tight"
+              className="font-serif text-h2 font-light leading-[1.18] tracking-tight"
             >
               We don’t chase volume. We partner with a small number of ambitious
               brands, for the long term, and treat their reputation as our own.

@@ -13,17 +13,17 @@ type Props = {
  */
 export default function Logo({ className = "", wordmark = true }: Props) {
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
+    <span className={`inline-flex items-center gap-3 ${className}`}>
       <Image
         src="/brand/mark.png"
         alt="Pink Tree Media"
-        width={26}
-        height={26}
+        width={48}
+        height={48}
         priority
-        className="h-[26px] w-auto shrink-0"
+        className="h-12 w-auto shrink-0"
       />
       {wordmark && (
-        <span className="font-[var(--font-display)] text-[1.15rem] font-normal tracking-tight">
+        <span className="font-display text-[1.6rem] font-semibold tracking-tight">
           Pink Tree
         </span>
       )}

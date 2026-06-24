@@ -167,7 +167,7 @@ export default async function CaseStudyPage({
                 delay={i * 60}
                 className="grid gap-x-12 gap-y-4 py-9 md:grid-cols-12"
               >
-                <dt className="font-[var(--font-display)] text-h3 font-light tracking-tight md:col-span-4">
+                <dt className="font-display text-h3 font-light tracking-tight md:col-span-4">
                   {d.area}
                 </dt>
                 <dd className="text-(--color-ink-soft) md:col-span-7 md:col-start-6">
@@ -222,7 +222,7 @@ export default async function CaseStudyPage({
               {study.results.map((r, i) => (
                 <Reveal key={i} delay={i * 80} as="li">
                   {r.value && (
-                    <p className="font-[var(--font-display)] text-[clamp(3rem,6vw,5rem)] font-light leading-none tracking-tight text-(--color-accent-soft)">
+                    <p className="font-display text-[clamp(3rem,6vw,5rem)] font-light leading-none tracking-tight text-(--color-accent-soft)">
                       {r.value}
                     </p>
                   )}
@@ -248,7 +248,7 @@ export default async function CaseStudyPage({
         >
           <span className="eyebrow">Next case study</span>
           <span className="mt-6 inline-flex items-center gap-4">
-            <span className="text-display font-[var(--font-display)] font-light tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
+            <span className="text-display font-display font-light tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
               {next.client}
             </span>
             <ArrowUpRight className="size-[clamp(1.5rem,3vw,2.5rem)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:text-(--color-accent)" />

@@ -16,7 +16,7 @@ export default function Footer() {
             href="/contact"
             className="group mt-8 inline-flex items-end gap-4"
           >
-            <span className="font-[var(--font-display)] text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.95] tracking-tight">
+            <span className="font-display text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.95] tracking-tight">
               Let’s begin
             </span>
             <ArrowUpRight className="mb-2 size-[clamp(1.75rem,4vw,3rem)] text-(--color-accent-soft) transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2" />
@@ -31,7 +31,7 @@ export default function Footer() {
             <div className="flex items-center gap-2.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/brand/mark.png" alt="Pink Tree Media" width={28} height={28} className="h-7 w-auto" />
-              <p className="font-[var(--font-display)] text-2xl font-light">{SITE.name}</p>
+              <p className="font-display text-2xl font-light">{SITE.name}</p>
             </div>
             <p className="mt-4 max-w-[28ch] text-sm leading-relaxed text-(--color-paper-on-dark)/75">
               A UK luxury creative consultancy. Complete marketing solutions for

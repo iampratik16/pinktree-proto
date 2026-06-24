@@ -1,29 +1,37 @@
-import { Fraunces, Inter } from "next/font/google";
+import { Archivo, Hanken_Grotesk, Fraunces } from "next/font/google";
 
 /**
- * Display / editorial serif. Variable font — we expose the optical-size axis
- * so large headlines can use higher `opsz` for that high-contrast luxury feel.
- * Only the hero weight range is preloaded (see layout) to keep CLS at zero.
+ * Typography system — pairing "E" (experimental / Hello Monday energy).
+ *
+ * The brief's families are commercial (PangramPangram): Monument Extended,
+ * PP Mori, Editorial New. With no licence files in the repo we ship close FREE
+ * look-alikes via next/font (self-hosted, zero layout shift). To use the real
+ * fonts later, drop the .woff2 into /public and swap these for next/font/local.
  */
-export const fraunces = Fraunces({
-  subsets: ["latin"],
-  // "optional" avoids a late web-font swap re-painting the LCP headline on slow
-  // connections (stable, fast LCP). Cached / fast loads still get Fraunces;
-  // first cold loads briefly use the size-adjusted fallback.
-  display: "optional",
-  variable: "--font-fraunces",
-  // Variable weight axis is implicit; opsz drives the high-contrast display feel.
-  // No italic (unused) keeps the display-font payload small for fast LCP.
-  axes: ["opsz"],
-  style: ["normal"],
-});
 
-/**
- * Neutral grotesque for UI, body, labels and eyebrows.
- */
-export const inter = Inter({
+/** Display — Monument Extended stand-in. Wide architectural grotesque; the
+ *  variable width axis lets big headlines expand for that "Monument" feel. */
+export const archivo = Archivo({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-inter",
-  weight: ["400", "500", "600"],
+  variable: "--font-archivo",
+  axes: ["wdth"],
+});
+
+/** Body / UI — PP Mori stand-in. Clean, slightly geometric grotesque. */
+export const hanken = Hanken_Grotesk({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-hanken",
+  weight: ["400", "500", "600", "700"],
+});
+
+/** Accent / editorial serif — Editorial New stand-in. High-contrast serif for
+ *  pull-quotes and editorial statements; opsz drives the display contrast. */
+export const fraunces = Fraunces({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-fraunces",
+  axes: ["opsz"],
+  style: ["normal"],
 });
