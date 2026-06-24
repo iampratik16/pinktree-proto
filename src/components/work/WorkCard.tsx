@@ -14,6 +14,8 @@ type Props = {
   sizes?: string;
   /** Heading level for the client name, to keep document outline sequential. */
   headingLevel?: "h2" | "h3";
+  /** Skip the internal clip reveal (caller owns the animation, e.g. WorkGrid). */
+  bare?: boolean;
 };
 
 export default function WorkCard({
@@ -22,9 +24,34 @@ export default function WorkCard({
   feature = false,
   sizes,
   headingLevel: Heading = "h3",
+  bare = false,
 }: Props) {
   const aspect = feature ? "16 / 10" : "4 / 3";
   const imgSizes = sizes ?? (feature ? "100vw" : "(min-width: 768px) 50vw, 100vw");
+
+  const mediaBox = (
+    <div
+      className="relative overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)"
+      style={{ aspectRatio: aspect }}
+    >
+      <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
+        {study.heroMedia.type === "video" ? (
+          <Video media={study.heroMedia} className="size-full" sizes={imgSizes} />
+        ) : (
+          <Img media={study.heroMedia} fill sizes={imgSizes} className="size-full" />
+        )}
+      </div>
+
+      {study.placeholder && (
+        <span className="absolute left-4 top-4 rounded-full bg-(--color-ink)/70 px-3 py-1 text-xs tracking-wide text-(--color-paper-on-dark) backdrop-blur-sm">
+          In preparation
+        </span>
+      )}
+
+      {/* Subtle accent veil on hover */}
+      <span className="pointer-events-none absolute inset-0 bg-(--color-accent) opacity-0 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-[0.12]" />
+    </div>
+  );
 
   return (
     <TransitionLink
@@ -32,29 +59,13 @@ export default function WorkCard({
       data-cursor="grow"
       className="group block"
     >
-      <Reveal media className="relative">
-        <div
-          className="relative overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)"
-          style={{ aspectRatio: aspect }}
-        >
-          <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
-            {study.heroMedia.type === "video" ? (
-              <Video media={study.heroMedia} className="size-full" sizes={imgSizes} />
-            ) : (
-              <Img media={study.heroMedia} fill sizes={imgSizes} className="size-full" />
-            )}
-          </div>
-
-          {study.placeholder && (
-            <span className="absolute left-4 top-4 rounded-full bg-(--color-ink)/70 px-3 py-1 text-xs tracking-wide text-(--color-paper-on-dark) backdrop-blur-sm">
-              In preparation
-            </span>
-          )}
-
-          {/* Subtle accent veil on hover */}
-          <span className="pointer-events-none absolute inset-0 bg-(--color-accent) opacity-0 mix-blend-multiply transition-opacity duration-700 group-hover:opacity-[0.12]" />
-        </div>
-      </Reveal>
+      {bare ? (
+        <div className="relative">{mediaBox}</div>
+      ) : (
+        <Reveal media className="relative">
+          {mediaBox}
+        </Reveal>
+      )}
 
       <div className="mt-6 flex items-start justify-between gap-6">
         <div>

@@ -63,7 +63,7 @@ const chigwellMarquees: CaseStudy = {
     loop(
       "/media/hero/home",
       "/media/work/chigwell/hero.jpg",
-      "Ambient motion study — draped silk in warm light.",
+      "Ambient motion study — rosewood ink in water.",
       1920,
       960,
     ),

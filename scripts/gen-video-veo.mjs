@@ -15,7 +15,7 @@ const OUT = process.argv[2] ?? join(ROOT, "public", "media", "hero", "home-veo.m
 
 const MODELS = ["veo-3.0-fast-generate-001", "veo-2.0-generate-001"];
 const PROMPT =
-  "Extremely slow, gentle drifting motion of softly flowing champagne silk fabric, subtle shimmering light, serene and luxurious, cinematic ambient loop, minimal movement";
+  "Rosewood and ink pigment slowly billowing and unfurling through water, elegant swirling blooms of dusty pink, cinematic slow motion, luxurious and moody, smooth continuous flow";
 
 const base = (m) =>
   `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT}/locations/${LOCATION}/publishers/google/models/${m}`;

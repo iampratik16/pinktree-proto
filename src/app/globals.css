@@ -339,6 +339,35 @@
     }
   }
 
+  /* Work grid items — hidden under JS until WorkGrid's GSAP reveals them
+     (failsafe + reduced-motion keep them visible). */
+  html.js [data-grid-item] {
+    opacity: 0;
+  }
+  html.js.gsap-failsafe [data-grid-item] {
+    opacity: 1;
+  }
+
+  /* Drifting atmosphere specks behind the work grid */
+  .speck {
+    position: absolute;
+    border-radius: 9999px;
+    background-color: var(--color-accent);
+    opacity: 0.18;
+    animation: speck-drift var(--dur, 20s) ease-in-out var(--delay, 0s) infinite;
+  }
+  @keyframes speck-drift {
+    0%,
+    100% {
+      transform: translate(0, 0);
+      opacity: 0.1;
+    }
+    50% {
+      transform: translate(var(--drift, 16px), -28px);
+      opacity: 0.28;
+    }
+  }
+
   /* Hero scroll cue — a line that draws down and resets */
   .scroll-cue {
     transform-origin: top;
@@ -442,5 +471,12 @@
     transform: none !important;
     filter: none !important;
     animation: none !important;
+  }
+  html.js [data-grid-item] {
+    opacity: 1 !important;
+  }
+  .speck {
+    animation: none !important;
+    opacity: 0.14 !important;
   }
 }

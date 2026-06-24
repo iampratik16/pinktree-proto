@@ -77,12 +77,15 @@ export default function PageTransition({ children }: { children: ReactNode }) {
   return (
     <TransitionContext.Provider value={navigate}>
       {children}
-      <div
-        aria-hidden
-        data-phase={phase}
-        className="page-curtain"
-      >
-        <span className="page-curtain__mark">Pink Tree</span>
+      <div aria-hidden data-phase={phase} className="page-curtain">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/mark.png"
+          alt=""
+          width={64}
+          height={64}
+          className="page-curtain__mark h-16 w-auto"
+        />
       </div>
     </TransitionContext.Provider>
   );

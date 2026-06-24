@@ -28,7 +28,11 @@ export default function Footer() {
         {/* Detail columns */}
         <div className="mt-16 grid grid-cols-2 gap-10 md:grid-cols-4">
           <div className="col-span-2 md:col-span-1">
-            <p className="font-[var(--font-display)] text-2xl font-light">{SITE.name}</p>
+            <div className="flex items-center gap-2.5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/brand/mark.png" alt="Pink Tree Media" width={28} height={28} className="h-7 w-auto" />
+              <p className="font-[var(--font-display)] text-2xl font-light">{SITE.name}</p>
+            </div>
             <p className="mt-4 max-w-[28ch] text-sm leading-relaxed text-(--color-paper-on-dark)/75">
               A UK luxury creative consultancy. Complete marketing solutions for
               ambitious brands.
