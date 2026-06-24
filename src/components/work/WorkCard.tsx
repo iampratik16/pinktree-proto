@@ -2,7 +2,7 @@ import TransitionLink from "@/components/ui/TransitionLink";
 import Reveal from "@/components/motion/Reveal";
 import Img from "@/components/media/Img";
 import Video from "@/components/media/Video";
-import LiquidImage from "@/components/media/LiquidImage";
+import BendImage from "@/components/media/BendImage";
 import { ArrowUpRight } from "@/components/ui/icons";
 import type { CaseStudy } from "@/content/schema";
 
@@ -40,9 +40,12 @@ export default function WorkCard({
           <Video media={study.heroMedia} className="size-full" sizes={imgSizes} />
         </div>
       ) : (
-        <LiquidImage className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
+        <BendImage
+          src={study.heroMedia.src}
+          className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]"
+        >
           <Img media={study.heroMedia} fill sizes={imgSizes} className="size-full" />
-        </LiquidImage>
+        </BendImage>
       )}
 
       {study.placeholder && (
