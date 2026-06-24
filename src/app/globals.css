@@ -210,23 +210,48 @@
     top: 0;
     left: 0;
     z-index: 9999;
+    display: grid;
+    place-items: center;
     width: 10px;
     height: 10px;
     border-radius: 9999px;
     background-color: var(--color-accent);
     pointer-events: none;
     opacity: 0;
-    mix-blend-mode: multiply;
     transition:
       width 0.4s var(--ease-out-expo),
       height 0.4s var(--ease-out-expo),
       background-color 0.4s var(--ease-out-expo),
+      mix-blend-mode 0s,
       opacity 0.3s linear;
+    mix-blend-mode: multiply;
   }
-  .cursor-dot[data-active="true"] {
+  .cursor-dot[data-state="grow"] {
     width: 46px;
     height: 46px;
     background-color: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  }
+  .cursor-dot[data-state="label"] {
+    width: 86px;
+    height: 86px;
+    background-color: var(--color-accent);
+    mix-blend-mode: normal;
+  }
+  .cursor-dot__label {
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-paper);
+    opacity: 0;
+    transform: scale(0.6);
+    transition:
+      opacity 0.3s var(--ease-out-expo),
+      transform 0.3s var(--ease-out-expo);
+  }
+  .cursor-dot[data-state="label"] .cursor-dot__label {
+    opacity: 1;
+    transform: scale(1);
   }
   /* Keep the native cursor visible too (accessibility); just hide the text caret feel */
   html.has-custom-cursor {

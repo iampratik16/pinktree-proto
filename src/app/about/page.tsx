@@ -4,6 +4,7 @@ import SplitHeading from "@/components/motion/SplitHeading";
 import MaskHeading from "@/components/motion/MaskHeading";
 import Figure from "@/components/media/Figure";
 import Button from "@/components/ui/Button";
+import Magnetic from "@/components/motion/Magnetic";
 import { img } from "@/lib/media";
 
 export const metadata: Metadata = {
@@ -84,9 +85,11 @@ export default function AboutPage() {
           Let’s build something worth remembering.
         </SplitHeading>
         <Reveal delay={120} className="mt-12 flex justify-center">
-          <Button href="/contact" variant="solid" withArrow>
-            Start a conversation
-          </Button>
+          <Magnetic strength={0.5}>
+            <Button href="/contact" variant="solid" withArrow>
+              Start a conversation
+            </Button>
+          </Magnetic>
         </Reveal>
       </section>
     </div>

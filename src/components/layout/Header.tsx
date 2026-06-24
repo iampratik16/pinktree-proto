@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import TransitionLink from "@/components/ui/TransitionLink";
 import Logo from "@/components/layout/Logo";
+import Magnetic from "@/components/motion/Magnetic";
 import { NAV } from "@/lib/site";
 
 export default function Header() {
@@ -79,12 +80,14 @@ export default function Header() {
                 {item.label}
               </TransitionLink>
             ))}
-            <TransitionLink
-              href="/contact"
-              className="rounded-full border border-current/30 px-5 py-2.5 text-sm tracking-tight transition-colors duration-500 hover:text-(--color-accent)"
-            >
-              Enquire
-            </TransitionLink>
+            <Magnetic strength={0.4}>
+              <TransitionLink
+                href="/contact"
+                className="inline-block rounded-full border border-current/30 px-5 py-2.5 text-sm tracking-tight transition-colors duration-500 hover:text-(--color-accent)"
+              >
+                Enquire
+              </TransitionLink>
+            </Magnetic>
           </nav>
 
           <button

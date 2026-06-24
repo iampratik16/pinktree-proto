@@ -2,6 +2,7 @@ import TransitionLink from "@/components/ui/TransitionLink";
 import Reveal from "@/components/motion/Reveal";
 import Img from "@/components/media/Img";
 import Video from "@/components/media/Video";
+import LiquidImage from "@/components/media/LiquidImage";
 import { ArrowUpRight } from "@/components/ui/icons";
 import type { CaseStudy } from "@/content/schema";
 
@@ -34,13 +35,15 @@ export default function WorkCard({
       className="relative overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)"
       style={{ aspectRatio: aspect }}
     >
-      <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
-        {study.heroMedia.type === "video" ? (
+      {study.heroMedia.type === "video" ? (
+        <div className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
           <Video media={study.heroMedia} className="size-full" sizes={imgSizes} />
-        ) : (
+        </div>
+      ) : (
+        <LiquidImage className="absolute inset-0 transition-transform duration-[1.2s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.05]">
           <Img media={study.heroMedia} fill sizes={imgSizes} className="size-full" />
-        )}
-      </div>
+        </LiquidImage>
+      )}
 
       {study.placeholder && (
         <span className="absolute left-4 top-4 rounded-full bg-(--color-ink)/70 px-3 py-1 text-xs tracking-wide text-(--color-paper-on-dark) backdrop-blur-sm">
@@ -56,7 +59,7 @@ export default function WorkCard({
   return (
     <TransitionLink
       href={`/work/${study.slug}`}
-      data-cursor="grow"
+      data-cursor-label="View"
       className="group block"
     >
       {bare ? (

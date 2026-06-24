@@ -4,6 +4,7 @@ import Reveal from "@/components/motion/Reveal";
 import SplitHeading from "@/components/motion/SplitHeading";
 import WorkCard from "@/components/work/WorkCard";
 import Button from "@/components/ui/Button";
+import Magnetic from "@/components/motion/Magnetic";
 import TransitionLink from "@/components/ui/TransitionLink";
 import { ArrowUpRight } from "@/components/ui/icons";
 import { getAllCaseStudies } from "@/content";
@@ -134,9 +135,11 @@ export default function Home() {
           Start a conversation.
         </SplitHeading>
         <Reveal delay={150} className="mt-12 flex justify-center">
-          <Button href="/contact" variant="solid" withArrow>
-            Start a conversation
-          </Button>
+          <Magnetic strength={0.5}>
+            <Button href="/contact" variant="solid" withArrow>
+              Start a conversation
+            </Button>
+          </Magnetic>
         </Reveal>
       </section>
     </>

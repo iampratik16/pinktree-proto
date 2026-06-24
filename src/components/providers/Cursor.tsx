@@ -3,12 +3,14 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Minimal bespoke cursor: a small rosewood-ringed disc that lerps toward the
- * pointer and expands over interactive elements. Fine-pointer devices only;
- * fully disabled under reduced motion. Native cursor stays as a fallback.
+ * Bespoke cursor: a small rosewood disc that lerps toward the pointer, expands
+ * over interactive elements, and morphs into a labelled pill ("View") over
+ * elements carrying `data-cursor-label` (Hello Monday-style). Fine-pointer only;
+ * disabled under reduced motion. Native cursor remains as a fallback.
  */
 export default function Cursor() {
   const ref = useRef<HTMLDivElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const finePointer = window.matchMedia("(pointer: fine)").matches;
@@ -16,7 +18,8 @@ export default function Cursor() {
     if (!finePointer || reduced) return;
 
     const el = ref.current;
-    if (!el) return;
+    const label = labelRef.current;
+    if (!el || !label) return;
 
     document.documentElement.classList.add("has-custom-cursor");
 
@@ -34,10 +37,20 @@ export default function Cursor() {
         visible = true;
         el.style.opacity = "1";
       }
-      const interactive = (e.target as HTMLElement)?.closest(
+      const target = e.target as HTMLElement;
+      const labelled = target?.closest<HTMLElement>("[data-cursor-label]");
+      const interactive = target?.closest(
         "a, button, [role='button'], input, textarea, select, label, [data-cursor='grow']",
       );
-      el.dataset.active = interactive ? "true" : "false";
+
+      if (labelled) {
+        el.dataset.state = "label";
+        label.textContent = labelled.dataset.cursorLabel || "View";
+      } else if (interactive) {
+        el.dataset.state = "grow";
+      } else {
+        el.dataset.state = "default";
+      }
     };
 
     const onLeave = () => {
@@ -64,5 +77,9 @@ export default function Cursor() {
     };
   }, []);
 
-  return <div ref={ref} aria-hidden className="cursor-dot" />;
+  return (
+    <div ref={ref} aria-hidden className="cursor-dot" data-state="default">
+      <span ref={labelRef} className="cursor-dot__label" />
+    </div>
+  );
 }
