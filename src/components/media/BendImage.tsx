@@ -7,6 +7,8 @@ import { useEffect, useRef, type ReactNode } from "react";
    ========================================================================== */
 const SEGMENTS = 40; // mesh resolution, higher = smoother bend
 const STRENGTH = 0.55; // bend depth toward the cursor
+const FALLOFF = 4.0; // bend breadth — LOWER = the whole card leans, HIGHER = a tight local poke
+const PROXIMITY = 150; // px around the card within which "hovering near" starts the bend
 const RIPPLE = 0.015; // ambient wobble — keep LOW (this is the "liquid" amount)
 const EASE = 0.1; // mouse + hover easing, lower = slower settle
 /* ========================================================================== */
@@ -22,16 +24,17 @@ uniform vec2 uMouse;
 uniform float uHover;
 uniform float uTime;
 uniform float uStrength;
+uniform float uFalloff;
 uniform float uRipple;
 varying vec2 vUv;
 void main() {
   vUv = uv;
   vec3 pos = position;
   float d = distance(uv, uMouse);
-  float falloff = exp(-d * d * 12.0);          // soft gaussian around the cursor
-  float bend = falloff * uHover * uStrength;     // vertex displacement toward cursor
+  float falloff = exp(-d * d * uFalloff);        // soft gaussian leaning toward the cursor
+  float bend = falloff * uHover * uStrength;       // vertex displacement = the bend
   float ripple = sin(uv.x * 9.0 + uTime * 1.4) * cos(uv.y * 9.0 + uTime * 1.1);
-  pos.z += bend + ripple * uRipple * uHover;     // subtle ambient wobble on top
+  pos.z += bend + ripple * uRipple * uHover;       // subtle ambient wobble on top
   gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
 }
 `;
@@ -60,15 +63,15 @@ void main() {
 type Props = { src: string; className?: string; children: ReactNode };
 
 /**
- * Hello Monday-style "bend on hover". The image is rendered on a subdivided
- * WebGL plane (OGL); a vertex shader displaces vertices toward the eased cursor
- * with a soft gaussian falloff, so the surface and edges flex as the pointer
- * moves over it. A faint ambient ripple (RIPPLE, kept low) adds life, not water.
+ * Hello Monday-style "bend on hover". The image is a subdivided WebGL plane (OGL)
+ * whose vertices displace toward the cursor with a soft gaussian falloff. The
+ * cursor is tracked at the window level so the card bends as the pointer comes
+ * NEAR it (within PROXIMITY px) — not only when directly over the image — and
+ * leans toward the pointer as a whole panel.
  *
  * The `next/image` passed as children is the SSR base layer and the fallback for
  * reduced-motion, touch / no-hover, no-WebGL, and while the texture loads. The
- * render loop runs only while the card is in view and hovered (or still easing
- * back), then stops; dpr is capped at 2.
+ * render loop runs only while in view and near/easing, then stops; dpr ≤ 2.
  */
 export default function BendImage({ src, className = "", children }: Props) {
   const wrap = useRef<HTMLDivElement>(null);
@@ -91,16 +94,16 @@ export default function BendImage({ src, className = "", children }: Props) {
       try {
         ogl = await import("ogl");
       } catch {
-        return; // no WebGL lib → keep the static image
+        return;
       }
       if (disposed) return;
       const { Renderer, Camera, Transform, Plane, Program, Mesh, Texture, Vec2 } = ogl;
 
-      let renderer;
+      let renderer: InstanceType<typeof Renderer>;
       try {
         renderer = new Renderer({ canvas, alpha: true, dpr: Math.min(window.devicePixelRatio || 1, 2) });
       } catch {
-        return; // WebGL unavailable
+        return;
       }
       const gl = renderer.gl;
       gl.clearColor(0, 0, 0, 0);
@@ -128,13 +131,13 @@ export default function BendImage({ src, className = "", children }: Props) {
           uResolution: { value: new Vec2(1, 1) },
           uImageSize: { value: new Vec2(1, 1) },
           uStrength: { value: STRENGTH },
+          uFalloff: { value: FALLOFF },
           uRipple: { value: RIPPLE },
         },
       });
       const mesh = new Mesh(gl, { geometry, program });
       mesh.setParent(scene);
 
-      // Lazy-load an optimised texture once the card nears the viewport.
       let texStarted = false;
       let ready = false;
       const loadTexture = () => {
@@ -143,14 +146,13 @@ export default function BendImage({ src, className = "", children }: Props) {
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.decoding = "async";
-        // w must be one of next.config images.deviceSizes (1280 is configured).
         img.src = `/_next/image?url=${encodeURIComponent(src)}&w=1280&q=75`;
         img.onload = () => {
           if (disposed) return;
           texture.image = img;
           program.uniforms.uImageSize.value.set(img.naturalWidth, img.naturalHeight);
           ready = true;
-          if (hovering) start();
+          ensure();
         };
       };
 
@@ -159,81 +161,87 @@ export default function BendImage({ src, className = "", children }: Props) {
         const h = el.clientHeight || 1;
         renderer.setSize(w, h);
         camera.perspective({ aspect: w / h });
-        mesh.scale.x = w / h; // fill horizontally, plane height stays 1
+        mesh.scale.x = w / h;
         program.uniforms.uResolution.value.set(w, h);
       };
       resize();
       const ro = new ResizeObserver(resize);
       ro.observe(el);
 
+      // Window-level cursor → bend when NEAR the card, not only over the image.
+      const cursor = { x: 0, y: 0, active: false };
       const target = new Vec2(0.5, 0.5);
       let targetHover = 0;
-      let hovering = false;
       let inView = true;
-
-      const onMove = (e: PointerEvent) => {
-        const r = el.getBoundingClientRect();
-        target.set((e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height);
-      };
-      const onEnter = () => {
-        hovering = true;
-        targetHover = 1;
-        if (ready) start();
-        else loadTexture();
-      };
-      const onLeave = () => {
-        hovering = false;
-        targetHover = 0;
-        start(); // run the ease-back, then the loop stops itself
-      };
-      el.addEventListener("pointermove", onMove);
-      el.addEventListener("pointerenter", onEnter);
-      el.addEventListener("pointerleave", onLeave);
-
-      const io = new IntersectionObserver(
-        ([entry]) => {
-          inView = entry.isIntersecting;
-          if (inView) loadTexture();
-          else {
-            hovering = false;
-            targetHover = 0;
-          }
-        },
-        { rootMargin: "200px" },
-      );
-      io.observe(el);
-
       let raf = 0;
       let running = false;
+
       const loop = (t: number) => {
         const u = program.uniforms;
+        const r = el.getBoundingClientRect();
+        let near = 0;
+        if (cursor.active && inView && r.width > 0) {
+          target.set((cursor.x - r.left) / r.width, 1 - (cursor.y - r.top) / r.height);
+          const dx = Math.max(r.left - cursor.x, 0, cursor.x - r.right);
+          const dy = Math.max(r.top - cursor.y, 0, cursor.y - r.bottom);
+          near = 1 - Math.min(Math.hypot(dx, dy) / PROXIMITY, 1);
+        }
+        targetHover = near;
+
         u.uMouse.value.x += (target.x - u.uMouse.value.x) * EASE;
         u.uMouse.value.y += (target.y - u.uMouse.value.y) * EASE;
         u.uHover.value += (targetHover - u.uHover.value) * EASE;
         u.uTime.value = t * 0.001;
-        renderer.render({ scene, camera });
+
+        if (u.uHover.value > 0.001) renderer.render({ scene, camera });
         canvas.style.opacity = String(Math.min(1, u.uHover.value));
-        // stop once eased back so we don't burn frames at rest
-        if (targetHover === 0 && u.uHover.value < 0.002) {
+
+        if (targetHover < 0.001 && u.uHover.value < 0.002) {
           running = false;
           canvas.style.opacity = "0";
           return;
         }
         raf = requestAnimationFrame(loop);
       };
-      const start = () => {
-        if (running || !ready || !inView) return;
-        running = true;
-        raf = requestAnimationFrame(loop);
+
+      const ensure = () => {
+        if (ready && inView && !running) {
+          running = true;
+          raf = requestAnimationFrame(loop);
+        }
       };
+
+      const onMove = (e: PointerEvent) => {
+        cursor.x = e.clientX;
+        cursor.y = e.clientY;
+        cursor.active = true;
+        ensure();
+      };
+      const onOut = () => {
+        cursor.active = false;
+        ensure();
+      };
+      window.addEventListener("pointermove", onMove, { passive: true });
+      document.addEventListener("pointerleave", onOut);
+
+      const io = new IntersectionObserver(
+        ([entry]) => {
+          inView = entry.isIntersecting;
+          if (inView) {
+            loadTexture();
+            ensure();
+          }
+        },
+        { rootMargin: "200px" },
+      );
+      io.observe(el);
 
       cleanup = () => {
         cancelAnimationFrame(raf);
         ro.disconnect();
         io.disconnect();
-        el.removeEventListener("pointermove", onMove);
-        el.removeEventListener("pointerenter", onEnter);
-        el.removeEventListener("pointerleave", onLeave);
+        window.removeEventListener("pointermove", onMove);
+        document.removeEventListener("pointerleave", onOut);
         const ext = gl.getExtension("WEBGL_lose_context");
         ext?.loseContext();
       };
@@ -246,9 +254,6 @@ export default function BendImage({ src, className = "", children }: Props) {
   }, [src]);
 
   return (
-    // The caller's className positions + sizes this wrapper (e.g. "absolute
-    // inset-0 …"); do not set inline position here or it would override that and
-    // collapse the box (the children are fill/absolute and add no height).
     <div ref={wrap} className={className}>
       {children}
       <canvas
