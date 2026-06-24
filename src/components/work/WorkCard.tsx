@@ -29,12 +29,13 @@ export default function WorkCard({
   const aspect = feature ? "16 / 10" : "4 / 3";
   const imgSizes = sizes ?? (feature ? "100vw" : "(min-width: 768px) 50vw, 100vw");
 
-  // Hello Monday-style WebGL bend lives in <BendImage>: a subdivided mesh flexes
-  // its EDGES toward the cursor while the centred subject stays fixed. The box
-  // keeps a stable rounded rect + overflow:hidden so the card outline is calm.
+  // Hello Monday-style liquid edge lives in <BendImage>: a static WebGL texture
+  // under a fragment alpha mask whose LEFT/RIGHT edges wave toward the cursor
+  // while the image stays fixed and top/bottom stay flat. The box stays a stable
+  // rounded rect; bg is transparent so the wavy edges reveal the page behind.
   const mediaBox = (
     <div
-      className="relative overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)"
+      className="relative overflow-hidden rounded-[var(--radius-sm)]"
       style={{ aspectRatio: aspect }}
     >
       {study.heroMedia.type === "video" ? (
