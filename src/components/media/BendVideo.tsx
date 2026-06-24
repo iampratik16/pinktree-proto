@@ -115,13 +115,17 @@ export default function BendVideo({ media, className = "", sizes = "100vw" }: Pr
     let disposed = false;
     let cleanup = () => {};
 
-    import("ogl")
+    const boot = () =>
+      import("ogl")
       .then(({ Renderer, Camera, Transform, Plane, Program, Mesh, Texture }) => {
         if (disposed || !wrapRef.current) return;
 
         let renderer: InstanceType<typeof Renderer>;
         try {
-          renderer = new Renderer({ alpha: true, antialias: true, dpr: Math.min(window.devicePixelRatio || 1, 2) });
+          // Cap dpr at 1.5: the ambient video surface re-uploads a full frame
+          // every tick, so a smaller backing store keeps the hero buttery while
+          // scrolling past, with no visible quality loss on a moving texture.
+          renderer = new Renderer({ alpha: true, antialias: true, dpr: Math.min(window.devicePixelRatio || 1, 1.5) });
         } catch {
           return; // no WebGL → plain <video> remains visible
         }
@@ -272,8 +276,19 @@ export default function BendVideo({ media, className = "", sizes = "100vw" }: Pr
       })
       .catch(() => {});
 
+    // Boot the WebGL surface on idle so it never competes with hydration, the
+    // LCP poster paint, or the first scroll frame (the poster shows meanwhile).
+    let idle = 0;
+    if (typeof window.requestIdleCallback === "function") {
+      idle = window.requestIdleCallback(() => boot(), { timeout: 1200 });
+    } else {
+      idle = window.setTimeout(() => boot(), 300);
+    }
+
     return () => {
       disposed = true;
+      if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(idle);
+      else window.clearTimeout(idle);
       cleanup();
     };
   }, [posterOnly, media.width, media.height]);

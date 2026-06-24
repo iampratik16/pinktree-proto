@@ -26,11 +26,16 @@ export default function SmoothScroll() {
       if (cancelled) return;
 
       const lenis = new Lenis({
-        lerp: 0.09,
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        // Frame-rate-independent exponential smoothing — the "butter" feel.
+        lerp: 0.1,
         smoothWheel: true,
-        touchMultiplier: 1.5,
+        wheelMultiplier: 1,
+        // Smooth on trackpads/touch too, without overshoot.
+        syncTouch: true,
+        touchMultiplier: 1.4,
+        // Keep programmatic scrollTo (anchors, route reset) eased.
+        duration: 1.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       });
       window.__lenis = lenis;
 

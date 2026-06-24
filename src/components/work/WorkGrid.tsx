@@ -68,30 +68,6 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
     };
   }, [filter, visible.length]);
 
-  // Scroll-velocity skew — the Unseen "liquid scroll" distortion.
-  useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    let raf = 0;
-    let last = window.scrollY;
-    let current = 0;
-    const tick = () => {
-      const y = window.scrollY;
-      const velocity = y - last;
-      last = y;
-      // ease toward the velocity-derived skew, then back to 0
-      const target = Math.max(-5, Math.min(5, velocity * 0.18));
-      current += (target - current) * 0.1;
-      if (Math.abs(current) < 0.01) current = 0;
-      grid.style.transform = `skewY(${current.toFixed(3)}deg)`;
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
   return (
     <div className="relative">
       {/* Filter pills */}
@@ -116,7 +92,7 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
 
       <ul
         ref={gridRef}
-        className="grid origin-top grid-cols-1 gap-x-8 gap-y-16 will-change-transform md:grid-cols-2 md:gap-y-24"
+        className="grid grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2 md:gap-y-24"
       >
         {visible.map((study, i) => (
           <li

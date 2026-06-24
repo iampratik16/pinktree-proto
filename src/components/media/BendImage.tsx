@@ -149,17 +149,25 @@ export default function BendImage({ src, alt, className = "", sizes }: Props) {
       base.style.transform = "none";
     };
 
-    // Lazy: only spin up a WebGL context when the card nears the viewport.
+    // Lazy: spin up the WebGL context when the card nears the viewport — but on
+    // IDLE time, so creating the context never blocks a scroll frame (keeps the
+    // scroll buttery; the static <img> shows until the canvas is ready).
+    const scheduleInit = () => {
+      if (started) return;
+      started = true;
+      const go = () => init();
+      if (typeof window.requestIdleCallback === "function") {
+        window.requestIdleCallback(go, { timeout: 1500 });
+      } else {
+        window.setTimeout(go, 200);
+      }
+    };
     const io = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           inView = true;
-          if (!started) {
-            started = true;
-            init();
-          } else {
-            resume();
-          }
+          if (!started) scheduleInit();
+          else resume();
         } else {
           inView = false; // pauses the RAF loop via the frame() guard
         }
@@ -397,6 +405,8 @@ export default function BendImage({ src, alt, className = "", sizes }: Props) {
         alt={alt}
         sizes={sizes}
         draggable={false}
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 size-full object-cover"
       />
       {/* WebGL canvas mounts here and fades in over the base image. */}
