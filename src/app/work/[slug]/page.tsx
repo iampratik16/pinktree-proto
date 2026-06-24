@@ -247,11 +247,11 @@ export default async function CaseStudyPage({
           className="group container-page flex flex-col items-center py-(--section-y) text-center"
         >
           <span className="eyebrow">Next case study</span>
-          <span className="mt-6 inline-flex items-center gap-4">
-            <span className="text-display font-display font-light tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
+          <span className="mt-6 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+            <span className="text-balance text-h1 font-display font-light tracking-tight transition-colors duration-500 group-hover:text-(--color-accent) sm:text-display">
               {next.client}
             </span>
-            <ArrowUpRight className="size-[clamp(1.5rem,3vw,2.5rem)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:text-(--color-accent)" />
+            <ArrowUpRight className="size-[clamp(1.5rem,3vw,2.5rem)] shrink-0 transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2 group-hover:text-(--color-accent)" />
           </span>
         </TransitionLink>
       </section>

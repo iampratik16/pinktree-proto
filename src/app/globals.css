@@ -596,3 +596,21 @@
     opacity: 0.14 !important;
   }
 }
+
+/* =============================================================================
+   Small-screen type: dial back the EXPANDED display face so big headlines fit
+   comfortably on phones (no crowding / horizontal overflow). Non-layered so it
+   wins over the @layer rules above.
+   ========================================================================== */
+@media (max-width: 480px) {
+  .display {
+    font-stretch: 108%;
+    letter-spacing: -0.02em;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-stretch: 100%;
+  }
+}
