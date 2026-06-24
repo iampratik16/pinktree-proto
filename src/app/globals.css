@@ -186,13 +186,21 @@
     letter-spacing: -0.01em;
   }
 
-  /* "What we do" capability cards — slow ken-burns drift + classy hover lift. */
+  /* "What we do" capability cards — staggered, ghost index, hover zoom + arrow. */
   .cap-card {
     transition: transform 0.6s var(--ease-out-expo);
   }
   .cap-card:hover,
   .cap-card:focus-within {
-    transform: translateY(-6px);
+    transform: translateY(-8px);
+  }
+  /* Image tile: slow ambient ken-burns on the image + a hover zoom on the box. */
+  .cap-card-media {
+    transition: transform 0.8s var(--ease-out-expo);
+  }
+  .cap-card:hover .cap-card-media,
+  .cap-card:focus-within .cap-card-media {
+    transform: scale(1.04);
   }
   .cap-card-img {
     will-change: transform;
@@ -200,26 +208,58 @@
   }
   @keyframes cap-kenburns {
     from {
-      transform: scale(1.04) translate3d(0, 0, 0);
+      transform: scale(1.05);
     }
     to {
-      transform: scale(1.13) translate3d(0, -2.5%, 0);
+      transform: scale(1.14) translate3d(0, -2%, 0);
     }
   }
+  /* Big outline index that the card top overlaps; fills with accent on hover. */
   .cap-card-num {
-    transition: color 0.5s var(--ease-out-expo);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: 125%;
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1.25px var(--color-hairline);
+    transition:
+      color 0.6s var(--ease-out-expo),
+      -webkit-text-stroke-color 0.6s var(--ease-out-expo);
   }
   .cap-card:hover .cap-card-num,
   .cap-card:focus-within .cap-card-num {
-    color: var(--color-paper-on-dark);
+    color: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    -webkit-text-stroke-color: var(--color-accent);
+  }
+  /* Circular arrow button — fills with accent on hover. */
+  .cap-card-arrow {
+    transition:
+      background-color 0.5s var(--ease-out-expo),
+      border-color 0.5s var(--ease-out-expo),
+      color 0.5s var(--ease-out-expo);
+  }
+  .cap-card:hover .cap-card-arrow,
+  .cap-card:focus-within .cap-card-arrow {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-paper);
+  }
+  .cap-card-arrow svg {
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  .cap-card:hover .cap-card-arrow svg,
+  .cap-card:focus-within .cap-card-arrow svg {
+    transform: translate(2px, -2px);
   }
   @media (prefers-reduced-motion: reduce) {
     .cap-card-img {
       animation: none !important;
-      transform: scale(1.04);
+      transform: scale(1.05);
     }
     .cap-card:hover,
-    .cap-card:focus-within {
+    .cap-card:focus-within,
+    .cap-card:hover .cap-card-media,
+    .cap-card:focus-within .cap-card-media {
       transform: none !important;
     }
   }

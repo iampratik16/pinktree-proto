@@ -24,9 +24,10 @@ const vertex = /* glsl */ `
 
 // FRAGMENT — the image is sampled at FIXED uv (cover-fit + a constant centre
 // zoom). The cursor NEVER touches imgUv, so the picture cannot move or distort.
-// Only the ALPHA MASK reads the cursor: it dents the LEFT/RIGHT edges with a
-// single bulge that follows the pointer (arbitrary, NOT a periodic wave) while
-// the top and bottom stay perfectly flat.
+// Only the ALPHA MASK reads the cursor: it dents whichever EDGE(S) the pointer
+// is nearest — left, right, top or bottom — with a single localised bulge that
+// follows the pointer (arbitrary, NOT a periodic wave). Hovering from the top
+// bends the top edge; from the side, that side. The image itself stays fixed.
 const fragment = /* glsl */ `
   precision highp float;
   uniform sampler2D tMap;
@@ -53,23 +54,32 @@ const fragment = /* glsl */ `
     vec2 imgUv = (coverUv - 0.5) / (1.0 + uOverscan) + 0.5; // static zoom ONLY
     vec4 color = texture2D(tMap, imgUv);
 
-    // ---- ALPHA MASK (MOVES): a single cursor-driven bulge, flat top/bottom. ----
-    // One smooth dent centred on the cursor's Y that follows the pointer — no
-    // clock-driven sine, so the deformation is arbitrary, not a marching wave.
+    // ---- ALPHA MASK (MOVES): cursor-driven dents on EVERY edge. Each edge pulls
+    // in by a localised bulge that follows the pointer; the nearer the cursor is
+    // to an edge, the more it reacts. No clock-driven sine → arbitrary, not a
+    // marching wave. (uMouse.y is flipped to uv space: 1 = top, 0 = bottom.)
+    float dx = vUv.x - uMouse.x;
     float dy = vUv.y - uMouse.y;
-    float bulge = uHover * uAmp * exp(-uProx * 9.0 * dy * dy); // peak at cursor Y
+    float bulgeY = uHover * uAmp * exp(-uProx * 9.0 * dy * dy); // varies down left/right edges
+    float bulgeX = uHover * uAmp * exp(-uProx * 9.0 * dx * dx); // varies along top/bottom edges
 
-    // The edge nearer the cursor reacts more, so the dent tracks the pointer
-    // left↔right instead of mirroring symmetrically.
+    // How near the cursor is to each edge.
     float leftBias = smoothstep(0.7, 0.0, uMouse.x);
     float rightBias = smoothstep(0.3, 1.0, uMouse.x);
-    float left = bulge * (0.3 + 0.7 * leftBias);
-    float right = bulge * (0.3 + 0.7 * rightBias);
+    float topBias = smoothstep(0.3, 1.0, uMouse.y);
+    float bottomBias = smoothstep(0.7, 0.0, uMouse.y);
 
-    // Opaque only between the (dented) left and right boundaries.
+    float left = bulgeY * (0.2 + 0.8 * leftBias);
+    float right = bulgeY * (0.2 + 0.8 * rightBias);
+    float top = bulgeX * (0.2 + 0.8 * topBias);
+    float bottom = bulgeX * (0.2 + 0.8 * bottomBias);
+
+    // Opaque only inside the (dented) boundaries on all four sides.
     float aL = smoothstep(left - FEATHER, left + FEATHER, vUv.x);
     float aR = 1.0 - smoothstep(1.0 - right - FEATHER, 1.0 - right + FEATHER, vUv.x);
-    float alpha = color.a * aL * aR;
+    float aB = smoothstep(bottom - FEATHER, bottom + FEATHER, vUv.y);
+    float aT = 1.0 - smoothstep(1.0 - top - FEATHER, 1.0 - top + FEATHER, vUv.y);
+    float alpha = color.a * aL * aR * aB * aT;
 
     gl_FragColor = vec4(color.rgb, alpha);
   }

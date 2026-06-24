@@ -50,36 +50,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What we do — animated capability cards */}
+      {/* What we do — staggered capability cards with ghost numbers + hover */}
       <section className="border-y border-(--color-hairline)">
         <div className="container-page section">
           <Reveal as="p" className="eyebrow">
             What we do
           </Reveal>
-          <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-6">
+          <ul className="mt-10 grid grid-cols-2 gap-x-5 gap-y-12 lg:grid-cols-4 lg:gap-x-8">
             {CAPABILITIES.map((cap, i) => (
-              <Reveal media key={cap} as="li" delay={i * 110} className="cap-card group">
-                <div className="cap-card-media relative aspect-[3/4] overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)">
-                  <Img
-                    media={CAP_IMAGES[i]}
-                    fill
-                    sizes="(min-width: 1024px) 22vw, 45vw"
-                    className="cap-card-img"
-                  />
-                  {/* Legibility scrim under the label */}
+              <Reveal
+                media
+                key={cap}
+                as="li"
+                delay={i * 110}
+                className={`cap-card group ${i % 2 === 1 ? "lg:mt-20" : ""}`}
+              >
+                <TransitionLink href="/work" className="block">
                   <span
                     aria-hidden
-                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-(--color-ink)/85 via-(--color-ink)/15 to-transparent"
-                  />
-                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 sm:p-5">
-                    <h3 className="text-h3 font-display font-medium leading-[1.05] tracking-tight text-(--color-paper-on-dark)">
+                    className="cap-card-num block text-[clamp(3.5rem,7vw,5.5rem)] tracking-tight"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="cap-card-media relative -mt-5 aspect-[4/5] overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)">
+                    <Img
+                      media={CAP_IMAGES[i]}
+                      fill
+                      sizes="(min-width: 1024px) 22vw, 45vw"
+                      className="cap-card-img"
+                    />
+                  </div>
+                  <div className="mt-5 flex items-center justify-between gap-3">
+                    <h3 className="text-h3 font-display font-medium tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
                       {cap}
                     </h3>
-                    <span className="cap-card-num eyebrow shrink-0 text-(--color-accent-soft)">
-                      {String(i + 1).padStart(2, "0")}
+                    <span className="cap-card-arrow grid size-10 shrink-0 place-items-center rounded-full border border-(--color-ink)/25 text-(--color-ink)">
+                      <ArrowUpRight className="size-4" />
                     </span>
                   </div>
-                </div>
+                </TransitionLink>
               </Reveal>
             ))}
           </ul>
