@@ -39,7 +39,11 @@ The lead case study uses polished **draft** copy written for layout/tone. Please
 
 ## 4. Imagery & video
 
-All files in `public/media/**` are **procedurally generated abstract placeholders** (warm gradients). Replace with real, art-directed assets per `MEDIA-README.md`. Keep the same file paths/names, or update the case-study data accordingly, then re-run `node scripts/gen-media.mjs` is _not_ needed for real assets — instead generate blur placeholders per `MEDIA-README.md`.
+All files in `public/media/**` are **AI-generated placeholders** (Vertex AI **Imagen 4** for stills, **Veo 3** for the ambient hero loop) — photographic and on-brand, but **stand-ins, not real client work**. Replace with real, art-directed client assets per `MEDIA-README.md`. Keep the same file paths/names, or update the case-study data accordingly, then generate blur placeholders per `MEDIA-README.md`.
+
+Regenerate the AI placeholders with:
+`VERTEX_TOKEN=$(gcloud auth print-access-token) PROJECT=<gcp-project> node scripts/gen-media-vertex.mjs`
+(`scripts/gen-media.mjs` is the original gradient generator, kept as an offline fallback.)
 - [ ] Home hero ambient loop (`public/media/hero/home.{mp4,webm,jpg}`).
 - [ ] Per-client hero + gallery imagery.
 - [ ] About imagery (`public/media/about/*`).
