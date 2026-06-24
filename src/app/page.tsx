@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Hero from "@/components/sections/Hero";
 import Reveal from "@/components/motion/Reveal";
 import SplitHeading from "@/components/motion/SplitHeading";
@@ -7,6 +8,10 @@ import TransitionLink from "@/components/ui/TransitionLink";
 import { ArrowUpRight } from "@/components/ui/icons";
 import { getAllCaseStudies } from "@/content";
 import { CAPABILITIES } from "@/lib/site";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   const studies = getAllCaseStudies();

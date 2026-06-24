@@ -6,8 +6,10 @@ import Figure from "@/components/media/Figure";
 import Img from "@/components/media/Img";
 import Video from "@/components/media/Video";
 import TransitionLink from "@/components/ui/TransitionLink";
+import JsonLd from "@/components/seo/JsonLd";
 import { ArrowUpRight } from "@/components/ui/icons";
 import { SITE } from "@/lib/site";
+import { breadcrumbLd, caseStudyLd } from "@/lib/structured-data";
 import {
   getAllSlugs,
   getCaseStudy,
@@ -32,10 +34,11 @@ export async function generateMetadata({
     description: study.seo.description,
     alternates: { canonical: `/work/${slug}` },
     openGraph: {
+      type: "article",
       title: study.seo.title,
       description: study.seo.description,
       url: `${SITE.url}/work/${slug}`,
-      images: [{ url: study.seo.ogImage }],
+      // og:image is provided automatically by ./opengraph-image.tsx
     },
   };
 }
@@ -73,6 +76,16 @@ export default async function CaseStudyPage({
 
   return (
     <article>
+      <JsonLd
+        data={[
+          caseStudyLd(study),
+          breadcrumbLd([
+            { name: "Home", path: "/" },
+            { name: "Work", path: "/work" },
+            { name: study.client, path: `/work/${study.slug}` },
+          ]),
+        ]}
+      />
       {/* Hero */}
       <header className="relative flex min-h-svh flex-col justify-end overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
         <div className="absolute inset-0">

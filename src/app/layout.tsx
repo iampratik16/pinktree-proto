@@ -8,6 +8,8 @@ import PageTransition from "@/components/providers/PageTransition";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingActions from "@/components/layout/FloatingActions";
+import JsonLd from "@/components/seo/JsonLd";
+import { organizationLd, localBusinessLd } from "@/lib/structured-data";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -68,6 +70,7 @@ export default function RootLayout({
           <Footer />
           <FloatingActions />
         </PageTransition>
+        <JsonLd data={[organizationLd(), localBusinessLd()]} />
       </body>
     </html>
   );
