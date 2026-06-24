@@ -186,6 +186,44 @@
     letter-spacing: -0.01em;
   }
 
+  /* "What we do" capability cards — slow ken-burns drift + classy hover lift. */
+  .cap-card {
+    transition: transform 0.6s var(--ease-out-expo);
+  }
+  .cap-card:hover,
+  .cap-card:focus-within {
+    transform: translateY(-6px);
+  }
+  .cap-card-img {
+    will-change: transform;
+    animation: cap-kenburns 22s ease-in-out infinite alternate;
+  }
+  @keyframes cap-kenburns {
+    from {
+      transform: scale(1.04) translate3d(0, 0, 0);
+    }
+    to {
+      transform: scale(1.13) translate3d(0, -2.5%, 0);
+    }
+  }
+  .cap-card-num {
+    transition: color 0.5s var(--ease-out-expo);
+  }
+  .cap-card:hover .cap-card-num,
+  .cap-card:focus-within .cap-card-num {
+    color: var(--color-paper-on-dark);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cap-card-img {
+      animation: none !important;
+      transform: scale(1.04);
+    }
+    .cap-card:hover,
+    .cap-card:focus-within {
+      transform: none !important;
+    }
+  }
+
   /* Animated underline for inline links */
   .link-underline {
     position: relative;

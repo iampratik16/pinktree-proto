@@ -3,16 +3,26 @@ import Hero from "@/components/sections/Hero";
 import Reveal from "@/components/motion/Reveal";
 import SplitHeading from "@/components/motion/SplitHeading";
 import WorkCard from "@/components/work/WorkCard";
+import Img from "@/components/media/Img";
 import Button from "@/components/ui/Button";
 import Magnetic from "@/components/motion/Magnetic";
 import TransitionLink from "@/components/ui/TransitionLink";
 import { ArrowUpRight } from "@/components/ui/icons";
 import { getAllCaseStudies } from "@/content";
+import { img } from "@/lib/media";
 import { CAPABILITIES } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
+
+// AI-generated stand-in imagery for the capability cards (see CONTENT-TODO.md).
+const CAP_IMAGES = [
+  img("/media/capabilities/01.jpg", "An embossed luxury branding suite with a wax seal and colour swatches", 1200, 1600),
+  img("/media/capabilities/02.jpg", "A stack of foil-embossed print collateral beside a cotton tote", 1200, 1600),
+  img("/media/capabilities/03.jpg", "A minimal website shown on a laptop and phone on a marble desk", 1200, 1600),
+  img("/media/capabilities/04.jpg", "An editorial social-content flat lay of printed photo tiles and florals", 1200, 1600),
+];
 
 export default function Home() {
   const studies = getAllCaseStudies();
@@ -40,26 +50,36 @@ export default function Home() {
         </div>
       </section>
 
-      {/* What we do — quiet capability strip */}
+      {/* What we do — animated capability cards */}
       <section className="border-y border-(--color-hairline)">
-        <div className="container-page">
-          <Reveal as="p" className="eyebrow pt-(--section-y)">
+        <div className="container-page section">
+          <Reveal as="p" className="eyebrow">
             What we do
           </Reveal>
-          <ul className="grid grid-cols-1 pb-(--section-y) pt-10 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-6">
             {CAPABILITIES.map((cap, i) => (
-              <Reveal
-                key={cap}
-                delay={i * 80}
-                as="li"
-                className="group flex items-baseline gap-4 border-t border-(--color-hairline) py-6 lg:border-l lg:border-t-0 lg:px-7 lg:py-0 lg:first:pl-0"
-              >
-                <span className="eyebrow text-(--color-accent-ink)">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span className="text-h3 font-display font-light tracking-tight">
-                  {cap}
-                </span>
+              <Reveal media key={cap} as="li" delay={i * 110} className="cap-card group">
+                <div className="cap-card-media relative aspect-[3/4] overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)">
+                  <Img
+                    media={CAP_IMAGES[i]}
+                    fill
+                    sizes="(min-width: 1024px) 22vw, 45vw"
+                    className="cap-card-img"
+                  />
+                  {/* Legibility scrim under the label */}
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-0 bg-gradient-to-t from-(--color-ink)/85 via-(--color-ink)/15 to-transparent"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4 sm:p-5">
+                    <h3 className="text-h3 font-display font-medium leading-[1.05] tracking-tight text-(--color-paper-on-dark)">
+                      {cap}
+                    </h3>
+                    <span className="cap-card-num eyebrow shrink-0 text-(--color-accent-soft)">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                </div>
               </Reveal>
             ))}
           </ul>
