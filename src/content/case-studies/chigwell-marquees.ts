@@ -2,10 +2,10 @@ import type { CaseStudy } from "@/content/schema";
 import { img, loop } from "@/lib/media";
 
 /**
- * LEAD CASE STUDY — The Chigwell Marquees (luxury Essex venue).
+ * LEAD CASE STUDY, The Chigwell Marquees (luxury Essex venue).
  * Copy below is a considered DRAFT for layout/tone and is pending client
  * sign-off (see CONTENT-TODO.md). Outcomes are qualitative statements, not
- * fabricated metrics — replace with real figures once supplied.
+ * fabricated metrics, replace with real figures once supplied.
  */
 const chigwellMarquees: CaseStudy = {
   slug: "the-chigwell-marquees",
@@ -22,20 +22,20 @@ const chigwellMarquees: CaseStudy = {
   heroMedia: loop(
     "/media/work/chigwell/hero",
     "/media/work/chigwell/hero.jpg",
-    "The Chigwell Marquees — bold crimson brand artwork.",
+    "The Chigwell Marquees, bold crimson brand artwork.",
     2560,
     1600,
   ),
   oneLineOutcome: "A complete brand world for an exceptional private venue.",
   theClient:
-    "The Chigwell Marquees creates extraordinary settings for weddings and private celebrations across Essex — clear-span structures dressed with the precision of an interior, set within mature private grounds.",
+    "The Chigwell Marquees creates extraordinary settings for weddings and private celebrations across Essex, clear-span structures dressed with the precision of an interior, set within mature private grounds.",
   theChallenge:
-    "The venue’s reputation travelled by word of mouth, but its presence online did not match the experience in person. They needed a brand and digital presence as considered as the events they stage — one that reassures discerning couples before a single conversation.",
+    "The venue’s reputation travelled by word of mouth, but its presence online did not match the experience in person. They needed a brand and digital presence as considered as the events they stage, one that reassures discerning couples before a single conversation.",
   delivered: [
     {
       area: "Design & Branding",
       summary:
-        "A refined identity system — wordmark, monogram and a warm, tactile palette — built to feel timeless rather than seasonal, and to sit as comfortably on a place setting as on a screen.",
+        "A refined identity system: wordmark, monogram and a warm, tactile palette, built to feel timeless rather than seasonal, and to sit as comfortably on a place setting as on a screen.",
     },
     {
       area: "Print & Merchandise",
@@ -45,7 +45,7 @@ const chigwellMarquees: CaseStudy = {
     {
       area: "Websites & Digital",
       summary:
-        "A fast, image-led website that lets the spaces speak — generous photography, an effortless enquiry flow and performance tuned for instant loading on mobile.",
+        "A fast, image-led website that lets the spaces speak, generous photography, an effortless enquiry flow and performance tuned for instant loading on mobile.",
     },
     {
       area: "Social Media",
@@ -91,7 +91,7 @@ const chigwellMarquees: CaseStudy = {
     { value: "< 1.5s", label: "Mobile load on the new site" },
   ],
   seo: {
-    title: "The Chigwell Marquees — Luxury venue brand & website",
+    title: "The Chigwell Marquees, Luxury venue brand & website",
     description:
       "A complete brand world and fast, image-led website for The Chigwell Marquees, a luxury private events venue in Essex.",
     ogImage: "/media/work/chigwell/hero.jpg",

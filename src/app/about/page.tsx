@@ -10,18 +10,18 @@ import { img } from "@/lib/media";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Pink Tree Media is a UK luxury creative consultancy — experienced, exacting, and built to be a trusted long-term partner to ambitious brands.",
+    "Pink Tree Media is a UK luxury creative consultancy, experienced, exacting, and built to be a trusted long-term partner to ambitious brands.",
   alternates: { canonical: "/about" },
 };
 
 const BLOCKS = [
   {
     eyebrow: "Experience",
-    body: "Years of work across luxury hospitality, events, beauty and lifestyle — brands where presentation is everything and detail is non-negotiable.",
+    body: "Years of work across luxury hospitality, events, beauty and lifestyle, brands where presentation is everything and detail is non-negotiable.",
   },
   {
     eyebrow: "Approach",
-    body: "Everything under one roof. Design and branding, print and merchandise, websites and digital, social media — considered together, never in silos.",
+    body: "Everything under one roof. Design and branding, print and merchandise, websites and digital, social media, considered together, never in silos.",
   },
   {
     eyebrow: "Quality",
@@ -29,11 +29,11 @@ const BLOCKS = [
   },
   {
     eyebrow: "Partnership",
-    body: "We work with a small number of clients for the long term — as a trusted partner invested in the reputation we help to build.",
+    body: "We work with a small number of clients for the long term, as a trusted partner invested in the reputation we help to build.",
   },
 ];
 
-const about01 = img("/media/about/01.jpg", "Studio detail — considered, tactile craft.", 1600, 2000);
+const about01 = img("/media/about/01.jpg", "Studio detail, considered, tactile craft.", 1600, 2000);
 const about02 = img("/media/about/02.jpg", "An expansive, calm working space.", 2560, 1600);
 
 export default function AboutPage() {

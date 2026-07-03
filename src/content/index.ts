@@ -46,7 +46,7 @@ export function getAllSlugs(): string[] {
   return caseStudies.map((c) => c.slug);
 }
 
-/** The next study in order (wraps around) — for the seamless "next" link. */
+/** The next study in order (wraps around), for the seamless "next" link. */
 export function getNextCaseStudy(slug: string): CaseStudy {
   const idx = caseStudies.findIndex((c) => c.slug === slug);
   return caseStudies[(idx + 1) % caseStudies.length];

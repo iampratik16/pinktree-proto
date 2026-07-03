@@ -10,7 +10,7 @@ export const SITE = {
   // Used for absolute URLs (OG images, sitemap, structured data).
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.pinktreemedia.com",
   description:
-    "Pink Tree Media provides complete marketing solutions for ambitious brands — a UK luxury creative consultancy spanning design, print, digital and social.",
+    "Pink Tree Media provides complete marketing solutions for ambitious brands, a UK luxury creative consultancy spanning design, print, digital and social.",
   tagline: "Complete marketing solutions for ambitious brands.",
   locale: "en_GB",
 } as const;
@@ -23,7 +23,7 @@ export const CONTACT = {
   // WhatsApp Business line (planning §13.8). Placeholder uses the landline.
   whatsappNumber: "442071931033",
   whatsappMessage:
-    "Hello Pink Tree Media — I'd like to start a conversation about a project.",
+    "Hello Pink Tree Media, I'd like to start a conversation about a project.",
   address: {
     street: "High Road",
     locality: "Chigwell",

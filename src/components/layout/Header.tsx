@@ -59,7 +59,7 @@ export default function Header() {
         }`}
       >
         <div className="container-page flex h-[var(--header-h,5rem)] items-center justify-between">
-          <TransitionLink href="/" aria-label="Pink Tree Media — home">
+          <TransitionLink href="/" aria-label="Pink Tree Media home">
             <Logo />
           </TransitionLink>
 

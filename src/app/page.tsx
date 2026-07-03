@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// AI-generated stand-in imagery for the capability cards — each plays an ambient
+// AI-generated stand-in imagery for the capability cards, each plays an ambient
 // video on hover (poster = the still). See CONTENT-TODO.md.
 const CAP_MEDIA = [
   loop("/media/capabilities/01", "/media/capabilities/01.jpg", "An embossed luxury branding suite with a wax seal and colour swatches", 1200, 1600),
@@ -47,13 +47,13 @@ export default function Home() {
               className="font-serif text-h2 font-light leading-[1.15] tracking-tight"
             >
               A luxury creative consultancy handling every aspect of a brand’s
-              marketing under one roof — quietly, and exceptionally well.
+              marketing under one roof, quietly, and exceptionally well.
             </SplitHeading>
           </div>
         </div>
       </section>
 
-      {/* What we do — staggered capability cards with ghost numbers + hover */}
+      {/* What we do, staggered capability cards with ghost numbers + hover */}
       <section className="border-y border-(--color-hairline)">
         <div className="container-page section">
           <Reveal as="p" className="eyebrow">
@@ -128,7 +128,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Approach teaser — Hyperspeed highway background */}
+      {/* Approach teaser, Hyperspeed highway background */}
       <section className="section relative isolate overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
         <HyperspeedBg />
         {/* Scrim: darkest under the statement (right), lets the streaks breathe

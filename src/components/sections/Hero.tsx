@@ -5,9 +5,9 @@ import { loop } from "@/lib/media";
 const homeHero = loop(
   "/media/hero/home",
   "/media/hero/home.jpg",
-  "Rosewood ink billowing through water — ambient brand film.",
-  1920,
-  960,
+  "Pink Tree Media brand reel.",
+  1280,
+  580,
 );
 
 export default function Hero() {

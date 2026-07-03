@@ -8,6 +8,6 @@ export default placeholderStudy({
   order: 2,
   disciplines: ["Design & Branding", "Websites & Digital", "Social Media"],
   heroSrc: "/media/work/aya/hero.jpg",
-  heroAlt: "Aya Beauty — bold magenta brand artwork.",
+  heroAlt: "Aya Beauty, bold magenta brand artwork.",
   heroVideo: true,
 });

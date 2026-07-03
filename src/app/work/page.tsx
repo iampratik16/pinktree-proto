@@ -8,7 +8,7 @@ import { getAllCaseStudies } from "@/content";
 export const metadata: Metadata = {
   title: "Selected Work",
   description:
-    "A curated selection of Pink Tree Media case studies — brand worlds, websites, print and social built for ambitious brands.",
+    "A curated selection of Pink Tree Media case studies, brand worlds, websites, print and social built for ambitious brands.",
   alternates: { canonical: "/work" },
 };
 
@@ -34,7 +34,7 @@ export default function WorkIndex() {
           <Reveal delay={120}>
             <p className="mt-8 max-w-[52ch] text-h3 font-light leading-relaxed text-(--color-ink-soft)">
               A small number of brands, handled completely. Each project shows the
-              full breadth of what we do — design, print, digital and social —
+              full breadth of what we do: design, print, digital and social,
               through real work.
             </p>
           </Reveal>

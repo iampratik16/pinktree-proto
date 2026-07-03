@@ -8,7 +8,7 @@ import { CONTACT, whatsappHref } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Start a conversation with Pink Tree Media. Enquire about complete marketing for your brand — design, print, digital and social.",
+    "Start a conversation with Pink Tree Media. Enquire about complete marketing for your brand, design, print, digital and social.",
   alternates: { canonical: "/contact" },
 };
 

@@ -8,6 +8,6 @@ export default placeholderStudy({
   order: 5,
   disciplines: ["Design & Branding", "Websites & Digital", "Print & Merchandise"],
   heroSrc: "/media/work/north-mymms/hero.jpg",
-  heroAlt: "North Mymms Park — bold electric-blue brand artwork.",
+  heroAlt: "North Mymms Park, bold electric-blue brand artwork.",
   heroVideo: true,
 });

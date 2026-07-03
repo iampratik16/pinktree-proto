@@ -50,11 +50,11 @@ export default function FooterBallpit() {
           ambientIntensity={1.6}
           lightIntensity={240}
           maxZ={1.4}
-          // Mobile: fewer, larger, slow, calm, non-interactive. Desktop: lively.
-          count={mobile ? 130 : 320}
-          friction={mobile ? 0.95 : 0.9975}
-          wallBounce={mobile ? 0.55 : 0.9}
-          maxVelocity={mobile ? 0.035 : 0.12}
+          // Slow, calm drift everywhere; mobile even gentler + non-interactive.
+          count={mobile ? 130 : 300}
+          friction={mobile ? 0.92 : 0.965}
+          wallBounce={mobile ? 0.4 : 0.65}
+          maxVelocity={mobile ? 0.02 : 0.045}
           followCursor={!mobile}
           minSize={mobile ? 0.5 : 0.35}
           maxSize={mobile ? 1.05 : 0.85}

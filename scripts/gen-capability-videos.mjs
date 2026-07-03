@@ -14,10 +14,10 @@ const LOCATION = process.env.LOCATION ?? "us-central1";
 const MODELS = ["veo-3.0-fast-generate-001", "veo-2.0-generate-001"];
 
 const JOBS = [
-  { n: "01", prompt: "Soft studio light slowly shifting across an embossed branding suite and wax seal, gentle shadow drift, refined minimal luxurious motion, no people" },
-  { n: "02", prompt: "Pages of a print collateral suite gently settling and turning, soft light drifting over foil and uncoated paper, refined minimal motion, no people" },
-  { n: "03", prompt: "Soft daylight slowly shifting across a laptop and phone on a marble desk, faint screen glow and gentle reflection drift, minimal elegant motion, no people" },
-  { n: "04", prompt: "Gentle drift across an editorial social flat lay of printed photo tiles and dried florals, soft light slowly shifting, minimal refined motion, no people" },
+  { n: "01", prompt: "Glossy violet brand and geometric monogram forms slowly drifting and gently rotating, saturated hypnotic motion, cinematic, no people" },
+  { n: "02", prompt: "Vivid coral folded paper and print forms slowly unfolding and drifting, saturated flowing hypnotic motion, cinematic, no people" },
+  { n: "03", prompt: "Electric-cyan holographic UI panels and glowing screens slowly floating and drifting apart, saturated digital motion, hypnotic, cinematic, no people" },
+  { n: "04", prompt: "Hot-pink social content tiles and glossy heart and speech-bubble forms slowly floating and drifting, saturated social motion, hypnotic, cinematic, no people" },
 ];
 
 const base = (m) => `https://${LOCATION}-aiplatform.googleapis.com/v1/projects/${PROJECT}/locations/${LOCATION}/publishers/google/models/${m}`;
