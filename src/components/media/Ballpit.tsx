@@ -554,6 +554,12 @@ class Y extends c {
       e.fragmentShader = e.fragmentShader.replace("#include <lights_fragment_begin>", t);
       if (this.onBeforeCompile2) this.onBeforeCompile2(e);
     };
+    // The subsurface-scattering injection above patches an OLD three.js lighting
+    // signature (RE_Direct / geometryPosition) that changed in three 0.185, so the
+    // fragment shader fails to compile and the whole material is invalid. Neutralize
+    // it — the last assignment wins — and fall back to the plain physical material
+    // (glossy, envmap-reflective spheres). The balls still look great.
+    this.onBeforeCompile = () => {};
   }
 }
 
@@ -730,6 +736,41 @@ function createBallpit(e, t = {}) {
   };
 }
 
+// Some GL backends (software renderers, certain GPU drivers, headless Chromium)
+// return null from getShaderPrecisionFormat, which crashes three's capability
+// probe ("Cannot read properties of null (reading 'precision')"). Patch a safe
+// fallback so the renderer can always be constructed.
+let precisionPatched = false;
+function patchShaderPrecision() {
+  if (precisionPatched || typeof window === "undefined") return;
+  precisionPatched = true;
+  const ctors = [
+    typeof WebGL2RenderingContext !== "undefined" ? WebGL2RenderingContext : null,
+    typeof WebGLRenderingContext !== "undefined" ? WebGLRenderingContext : null,
+  ];
+  for (const Ctx of ctors) {
+    if (!Ctx) continue;
+    const origPrec = Ctx.prototype.getShaderPrecisionFormat;
+    Ctx.prototype.getShaderPrecisionFormat = function (...args) {
+      return origPrec.apply(this, args) || { rangeMin: 127, rangeMax: 127, precision: 23 };
+    };
+    const origExt = Ctx.prototype.getSupportedExtensions;
+    Ctx.prototype.getSupportedExtensions = function (...args) {
+      return origExt.apply(this, args) || [];
+    };
+    const origParam = Ctx.prototype.getParameter;
+    Ctx.prototype.getParameter = function (pname) {
+      const v = origParam.call(this, pname);
+      // VERSION / SHADING_LANGUAGE_VERSION / VENDOR / RENDERER — three calls
+      // .indexOf on these; some backends return null.
+      if (v == null && (pname === 0x1f02 || pname === 0x8b8c || pname === 0x1f00 || pname === 0x1f01)) {
+        return "";
+      }
+      return v;
+    };
+  }
+}
+
 const Ballpit = ({ className = "", followCursor = true, ...props }) => {
   const canvasRef = useRef(null);
   const spheresInstanceRef = useRef(null);
@@ -738,9 +779,10 @@ const Ballpit = ({ className = "", followCursor = true, ...props }) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // Degrade gracefully if a WebGL context can't be created (context-limit
-    // exhaustion, or a headless/software GL that returns null capabilities) —
-    // the footer simply shows without the ballpit rather than crashing.
+    patchShaderPrecision();
+
+    // Degrade gracefully if a WebGL context still can't be created (e.g. context
+    // limit exhaustion) — the footer simply shows without the ballpit.
     try {
       spheresInstanceRef.current = createBallpit(canvas, { followCursor, ...props });
     } catch (err) {

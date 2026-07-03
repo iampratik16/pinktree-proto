@@ -17,6 +17,7 @@ const GooeyNav = ({
   timeVariance = 300,
   colors = [1, 2, 3, 1, 2, 3, 1, 4],
   initialActiveIndex = 0,
+  onSelect = undefined,
 }) => {
   const containerRef = useRef(null);
   const navRef = useRef(null);
@@ -26,6 +27,9 @@ const GooeyNav = ({
 
   const pathname = usePathname();
   const navigate = useTransitionNavigate();
+  // Tab mode: when an onSelect handler is given, clicks drive a local selection
+  // (e.g. a filter) instead of routing, and the active pill follows clicks only.
+  const isTabMode = typeof onSelect === "function";
 
   const routeIndex = () =>
     items.findIndex(
@@ -129,7 +133,8 @@ const GooeyNav = ({
   const handleClick = (e, index, href) => {
     e.preventDefault();
     if (activeIndex !== index) runEffect(index);
-    navigate(href); // route through the transition curtain
+    if (isTabMode) onSelect(index);
+    else navigate(href); // route through the transition curtain
   };
 
   const handleKeyDown = (e, index, href) => {
@@ -142,6 +147,7 @@ const GooeyNav = ({
   // Keep the active pill synced to the current route (header persists across
   // navigations, so the pill must follow the pathname, not just clicks).
   useEffect(() => {
+    if (isTabMode) return; // filter mode manages its own selection
     const idx = routeIndex();
     if (idx >= 0) setActiveIndex(idx);
     else setActiveIndex(-1);
@@ -169,7 +175,7 @@ const GooeyNav = ({
       <nav>
         <ul ref={navRef}>
           {items.map((item, index) => (
-            <li key={item.href} className={activeIndex === index ? "active" : ""}>
+            <li key={item.label} className={activeIndex === index ? "active" : ""}>
               <a
                 href={item.href}
                 onClick={(e) => handleClick(e, index, item.href)}

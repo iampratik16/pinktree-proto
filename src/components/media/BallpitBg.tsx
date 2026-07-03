@@ -8,8 +8,9 @@ const Ballpit = dynamic(() => import("@/components/media/Ballpit"), {
   ssr: false,
 }) as ComponentType<Record<string, unknown>>;
 
-// Rosewood → blush → bone balls so they read on the ink footer (default is black).
-const COLORS = [0xa86b72, 0xd8c2c5, 0xefeae1];
+// Bone → blush → rosewood balls (light-weighted) so they read clearly on the ink
+// footer — the default black would be invisible.
+const COLORS = [0xefeae1, 0xd8c2c5, 0xa86b72];
 
 /**
  * Ballpit background for the footer's closing invitation. It's a 150-ball physics
@@ -47,10 +48,10 @@ export default function BallpitBg() {
           wallBounce={0.92}
           followCursor
           colors={COLORS}
-          ambientIntensity={1.2}
-          lightIntensity={220}
-          minSize={0.6}
-          maxSize={1.15}
+          ambientIntensity={1.5}
+          lightIntensity={280}
+          minSize={0.7}
+          maxSize={1.35}
         />
       )}
     </div>

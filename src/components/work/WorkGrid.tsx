@@ -1,11 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import WorkCard from "@/components/work/WorkCard";
+import GooeyNav from "@/components/layout/GooeyNav";
 import { loadGsap } from "@/lib/gsap";
 import { DISCIPLINES, type CaseStudy, type Discipline } from "@/content/schema";
 
 type Filter = "All" | Discipline;
+
+// GooeyNav is vendored (@ts-nocheck); type its props for this filter usage.
+const FilterNav = GooeyNav as unknown as ComponentType<{
+  items: { label: string; href: string }[];
+  onSelect?: (index: number) => void;
+  initialActiveIndex?: number;
+  particleCount?: number;
+  particleDistances?: [number, number];
+  particleR?: number;
+}>;
 
 export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
   const [filter, setFilter] = useState<Filter>("All");
@@ -70,24 +81,16 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
 
   return (
     <div className="relative">
-      {/* Filter pills */}
-      <div className="sticky top-[var(--header-h)] z-20 -mx-[var(--gutter)] mb-14 bg-(--color-paper)/80 px-[var(--gutter)] py-4 backdrop-blur-md">
-        <div className="flex flex-wrap items-center gap-2">
-          {filters.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              onClick={() => setFilter(f.key)}
-              data-active={filter === f.key}
-              className="group inline-flex items-center gap-1.5 rounded-full border border-(--color-ink)/15 px-4 py-2 text-sm tracking-tight transition-colors duration-400 data-[active=true]:border-(--color-ink) data-[active=true]:bg-(--color-ink) data-[active=true]:text-(--color-paper-on-dark) hover:border-(--color-ink)/50"
-            >
-              {f.key}
-              <span className="text-xs text-(--color-ink-soft) group-data-[active=true]:text-(--color-paper-on-dark)/60">
-                {f.count}
-              </span>
-            </button>
-          ))}
-        </div>
+      {/* Filter — gooey nav (the same effect as the header) */}
+      <div className="sticky top-[var(--header-h)] z-20 mb-14 flex justify-start overflow-x-auto py-4">
+        <FilterNav
+          items={filters.map((f) => ({ label: f.key, href: "#" }))}
+          onSelect={(index) => setFilter(filters[index].key)}
+          initialActiveIndex={0}
+          particleCount={12}
+          particleDistances={[60, 10]}
+          particleR={80}
+        />
       </div>
 
       <ul

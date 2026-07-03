@@ -10,12 +10,12 @@ export default function Footer() {
   return (
     <footer className="bg-(--color-ink) text-(--color-paper-on-dark)">
       <div className="container-page section">
-        {/* Closing invitation — over an interactive ballpit */}
+        {/* Closing invitation — text on top, an interactive ballpit settling below */}
         <div className="relative -mt-6 overflow-hidden">
           <BallpitBg />
-          <Reveal className="relative z-10 flex min-h-[clamp(300px,42vh,460px)] flex-col justify-end">
+          <Reveal className="pointer-events-none relative z-10 flex min-h-[clamp(360px,52vh,540px)] flex-col justify-start pt-2">
             <p className="eyebrow text-(--color-paper-on-dark)/70">Start a conversation</p>
-            <TransitionLink href="/contact" className="group mt-8 inline-flex items-end gap-4">
+            <TransitionLink href="/contact" className="group pointer-events-auto mt-8 inline-flex items-end gap-4">
               <span className="font-display text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.95] tracking-tight [text-shadow:0_2px_30px_rgba(20,17,15,0.7)]">
                 Let’s begin
               </span>
