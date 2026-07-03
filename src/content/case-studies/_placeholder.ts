@@ -1,5 +1,5 @@
 import type { CaseStudy, Discipline } from "@/content/schema";
-import { img } from "@/lib/media";
+import { img, loop } from "@/lib/media";
 
 /**
  * Builds a clearly-marked PLACEHOLDER case study. Copy is neutral and obviously
@@ -14,8 +14,10 @@ export function placeholderStudy(opts: {
   disciplines: Discipline[];
   heroSrc: string;
   heroAlt: string;
+  /** When true, the hero plays a Veo ambient loop on hover (poster = heroSrc). */
+  heroVideo?: boolean;
 }): CaseStudy {
-  const { slug, client, sector, order, disciplines, heroSrc, heroAlt } = opts;
+  const { slug, client, sector, order, disciplines, heroSrc, heroAlt, heroVideo } = opts;
   return {
     slug,
     client,
@@ -23,7 +25,9 @@ export function placeholderStudy(opts: {
     order,
     placeholder: true,
     disciplines,
-    heroMedia: img(heroSrc, heroAlt, 2560, 1600),
+    heroMedia: heroVideo
+      ? loop(heroSrc.replace(/\.[^.]+$/, ""), heroSrc, heroAlt, 2560, 1600)
+      : img(heroSrc, heroAlt, 2560, 1600),
     oneLineOutcome: "Case study in preparation.",
     theClient:
       "TODO: client to supply — a short paragraph introducing who they are.",

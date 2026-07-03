@@ -66,7 +66,9 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body>
+      {/* suppressHydrationWarning: extensions (e.g. Bitdefender) inject bis_register/
+          __processed_* attributes onto <body> before hydration — harmless mismatch. */}
+      <body suppressHydrationWarning>
         <Preloader />
         <SiteBackground />
         <SmoothScroll />

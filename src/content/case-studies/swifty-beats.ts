@@ -9,4 +9,5 @@ export default placeholderStudy({
   disciplines: ["Design & Branding", "Social Media"],
   heroSrc: "/media/work/swifty/hero.jpg",
   heroAlt: "Swifty Beats — placeholder brand imagery.",
+  heroVideo: true,
 });

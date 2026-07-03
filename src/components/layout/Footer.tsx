@@ -1,6 +1,6 @@
 import TransitionLink from "@/components/ui/TransitionLink";
 import Reveal from "@/components/motion/Reveal";
-import BallpitBg from "@/components/media/BallpitBg";
+import FooterBallpit from "@/components/media/FooterBallpit";
 import { ArrowUpRight, Instagram } from "@/components/ui/icons";
 import { CONTACT, NAV, SITE } from "@/lib/site";
 
@@ -8,23 +8,38 @@ export default function Footer() {
   const year = 2026;
 
   return (
-    <footer className="bg-(--color-ink) text-(--color-paper-on-dark)">
-      <div className="container-page section">
-        {/* Closing invitation — text on top, an interactive ballpit settling below */}
-        <div className="relative -mt-6 overflow-hidden">
-          <BallpitBg />
-          <Reveal className="pointer-events-none relative z-10 flex min-h-[clamp(360px,52vh,540px)] flex-col justify-start pt-2">
-            <p className="eyebrow text-(--color-paper-on-dark)/70">Start a conversation</p>
-            <TransitionLink href="/contact" className="group pointer-events-auto mt-8 inline-flex items-end gap-4">
-              <span className="font-display text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.95] tracking-tight [text-shadow:0_2px_30px_rgba(20,17,15,0.7)]">
+    <footer className="relative isolate overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
+      {/* Bubbles span the whole footer */}
+      <FooterBallpit />
+      {/* Scrim — airy at the top so the invitation reads against the bubbles,
+          darkening toward the bottom so the detail columns stay legible. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-(--color-ink)/20 via-(--color-ink)/45 to-(--color-ink)/92"
+      />
+
+      <div className="container-page section relative z-10">
+        {/* Closing invitation — bubbles play behind it */}
+        <div className="relative -mt-4">
+          {/* Soft dark halo so the light headline reads over the light bubbles. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-x-10 -inset-y-8 z-0 bg-[radial-gradient(70%_130%_at_16%_50%,rgba(20,17,15,0.78),rgba(20,17,15,0.2)_58%,transparent_80%)]"
+          />
+          <Reveal className="relative z-10 flex min-h-[clamp(220px,36vh,420px)] flex-col justify-center">
+            <p className="eyebrow text-(--color-paper-on-dark)/85 [text-shadow:0_1px_16px_rgba(20,17,15,0.85)]">
+              Start a conversation
+            </p>
+            <TransitionLink href="/contact" className="group mt-6 inline-flex items-end gap-4">
+              <span className="font-display text-[clamp(3.25rem,9.5vw,7.5rem)] font-normal leading-[0.92] tracking-tight text-(--color-paper-on-dark) [text-shadow:0_2px_60px_rgba(20,17,15,0.95),0_2px_12px_rgba(20,17,15,0.8)]">
                 Let’s begin
               </span>
-              <ArrowUpRight className="mb-2 size-[clamp(1.75rem,4vw,3rem)] text-(--color-accent-soft) transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2" />
+              <ArrowUpRight className="mb-2 size-[clamp(1.9rem,4.5vw,3.25rem)] text-(--color-accent-soft) drop-shadow-[0_2px_10px_rgba(20,17,15,0.85)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2" />
             </TransitionLink>
           </Reveal>
         </div>
 
-        <hr className="mt-20 h-px w-full border-0 bg-(--color-hairline-dark)" />
+        <hr className="mt-12 h-px w-full border-0 bg-(--color-hairline-dark)" />
 
         {/* Detail columns */}
         <div className="mt-16 grid grid-cols-2 gap-10 md:grid-cols-4">

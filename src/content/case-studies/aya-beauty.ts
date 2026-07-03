@@ -9,4 +9,5 @@ export default placeholderStudy({
   disciplines: ["Design & Branding", "Websites & Digital", "Social Media"],
   heroSrc: "/media/work/aya/hero.jpg",
   heroAlt: "Aya Beauty — placeholder brand imagery.",
+  heroVideo: true,
 });

@@ -1,9 +1,17 @@
 /* eslint-disable */
 // @ts-nocheck
 "use client";
-// Vendored from React Bits — Ballpit (three.js physics). Kept verbatim except the
-// renderer pixel ratio is capped at 1.5 (createBallpit) for scroll perf. Inspired
-// by Kevin Levron (https://x.com/soju22/status/1858925191671271801).
+// Vendored from React Bits — Ballpit (three.js physics). Inspired by Kevin Levron
+// (https://x.com/soju22/status/1858925191671271801). Adapted for this site:
+//  • a FRESH <canvas> is minted per mount (React StrictMode double-invokes effects
+//    in dev; a canvas binds one GL context for life + dispose() forceContextLoss(),
+//    so reusing a node hands three a dead context → getParameter null → crash);
+//  • getShaderPrecisionFormat / getParameter string fallbacks (some ANGLE paths
+//    return null) — NEVER getSupportedExtensions=[] (that disables float textures →
+//    context loss on real GPUs);
+//  • the subsurface-scattering shader injection is neutralized (plain physical
+//    material — glossy, envmap-reflective — guaranteed to compile on three 0.185);
+//  • devicePixelRatio capped for scroll perf.
 import { useEffect, useRef } from "react";
 import {
   Vector3 as a,
@@ -261,12 +269,10 @@ function S(e) {
         document.body.addEventListener("pointermove", M);
         document.body.addEventListener("pointerleave", L);
         document.body.addEventListener("click", C);
-
         document.body.addEventListener("touchstart", TouchStart, { passive: false });
         document.body.addEventListener("touchmove", TouchMove, { passive: false });
         document.body.addEventListener("touchend", TouchEnd, { passive: false });
         document.body.addEventListener("touchcancel", TouchEnd, { passive: false });
-
         R = true;
       }
     }
@@ -278,12 +284,10 @@ function S(e) {
       document.body.removeEventListener("pointermove", M);
       document.body.removeEventListener("pointerleave", L);
       document.body.removeEventListener("click", C);
-
       document.body.removeEventListener("touchstart", TouchStart);
       document.body.removeEventListener("touchmove", TouchMove);
       document.body.removeEventListener("touchend", TouchEnd);
       document.body.removeEventListener("touchcancel", TouchEnd);
-
       R = false;
     }
   };
@@ -295,7 +299,6 @@ function M(e) {
   A.y = e.clientY;
   processInteraction();
 }
-
 function processInteraction() {
   for (const [elem, t] of b) {
     const i = elem.getBoundingClientRect();
@@ -312,7 +315,6 @@ function processInteraction() {
     }
   }
 }
-
 function C(e) {
   A.x = e.clientX;
   A.y = e.clientY;
@@ -322,7 +324,6 @@ function C(e) {
     if (D(i)) t.onClick(t);
   }
 }
-
 function L() {
   for (const t of b.values()) {
     if (t.hover) {
@@ -331,13 +332,11 @@ function L() {
     }
   }
 }
-
 function TouchStart(e) {
   if (e.touches.length > 0) {
     e.preventDefault();
     A.x = e.touches[0].clientX;
     A.y = e.touches[0].clientY;
-
     for (const [elem, t] of b) {
       const rect = elem.getBoundingClientRect();
       if (D(rect)) {
@@ -352,17 +351,14 @@ function TouchStart(e) {
     }
   }
 }
-
 function TouchMove(e) {
   if (e.touches.length > 0) {
     e.preventDefault();
     A.x = e.touches[0].clientX;
     A.y = e.touches[0].clientY;
-
     for (const [elem, t] of b) {
       const rect = elem.getBoundingClientRect();
       P(t, rect);
-
       if (D(rect)) {
         if (!t.hover) {
           t.hover = true;
@@ -376,7 +372,6 @@ function TouchMove(e) {
     }
   }
 }
-
 function TouchEnd() {
   for (const [, t] of b) {
     if (t.touching) {
@@ -388,7 +383,6 @@ function TouchEnd() {
     }
   }
 }
-
 function P(e, t) {
   const { position: i, nPosition: s } = e;
   i.x = A.x - t.left;
@@ -554,11 +548,10 @@ class Y extends c {
       e.fragmentShader = e.fragmentShader.replace("#include <lights_fragment_begin>", t);
       if (this.onBeforeCompile2) this.onBeforeCompile2(e);
     };
-    // The subsurface-scattering injection above patches an OLD three.js lighting
-    // signature (RE_Direct / geometryPosition) that changed in three 0.185, so the
-    // fragment shader fails to compile and the whole material is invalid. Neutralize
-    // it — the last assignment wins — and fall back to the plain physical material
-    // (glossy, envmap-reflective spheres). The balls still look great.
+    // Neutralize the subsurface-scattering injection above (last assignment wins):
+    // it patches an older lighting signature and is risky to compile across three
+    // builds. A plain physical material (glossy, clearcoat, envmap-reflective) gives
+    // the same pearlescent bubble look and is guaranteed to compile.
     this.onBeforeCompile = () => {};
   }
 }
@@ -669,16 +662,14 @@ function createBallpit(e, t = {}) {
   const i = new x({
     canvas: e,
     size: "parent",
-    // antialias:false is broadly compatible (some software/headless GL return
-    // null capabilities with MSAA) and lighter — fine for a soft background.
-    rendererOptions: { antialias: false, alpha: true },
+    rendererOptions: { antialias: true, alpha: true },
   });
   let s;
   i.renderer.toneMapping = v;
   i.camera.position.set(0, 0, 20);
   i.camera.lookAt(0, 0, 0);
   i.cameraMaxAspect = 1.5;
-  i.maxPixelRatio = 1.5; // cap dpr for scroll perf
+  i.maxPixelRatio = 1.5; // ponytail: dpr cap — perf only, no visual change
   i.resize();
   initialize(t);
   const n = new y();
@@ -736,69 +727,78 @@ function createBallpit(e, t = {}) {
   };
 }
 
-// Some GL backends (software renderers, certain GPU drivers, headless Chromium)
-// return null from getShaderPrecisionFormat, which crashes three's capability
-// probe ("Cannot read properties of null (reading 'precision')"). Patch a safe
-// fallback so the renderer can always be constructed.
-let precisionPatched = false;
-function patchShaderPrecision() {
-  if (precisionPatched || typeof window === "undefined") return;
-  precisionPatched = true;
-  const ctors = [
+// Some ANGLE/driver paths return null from getShaderPrecisionFormat (three reads
+// .precision on it → crash) or from getParameter(VERSION/RENDERER/...) (three calls
+// .indexOf on it). Shim ONLY these to CORRECT values (real highp / a real WebGL2
+// identity) — never getSupportedExtensions=[] (that disables float textures and
+// causes context loss on real GPUs). No-op on browsers that return non-null.
+let precisionShimmed = false;
+function shimShaderPrecision() {
+  if (precisionShimmed || typeof window === "undefined") return;
+  precisionShimmed = true;
+  const HIGHP = { rangeMin: 127, rangeMax: 127, precision: 23 };
+  const GL = {
+    0x1f00: "WebGL",
+    0x1f01: "WebGL",
+    0x1f02: "WebGL 2.0 (OpenGL ES 3.0 Chromium)",
+    0x8b8c: "WebGL GLSL ES 3.00 (OpenGL ES GLSL ES 3.0 Chromium)",
+  };
+  for (const Ctx of [
     typeof WebGL2RenderingContext !== "undefined" ? WebGL2RenderingContext : null,
     typeof WebGLRenderingContext !== "undefined" ? WebGLRenderingContext : null,
-  ];
-  for (const Ctx of ctors) {
+  ]) {
     if (!Ctx) continue;
     const origPrec = Ctx.prototype.getShaderPrecisionFormat;
     Ctx.prototype.getShaderPrecisionFormat = function (...args) {
-      return origPrec.apply(this, args) || { rangeMin: 127, rangeMax: 127, precision: 23 };
-    };
-    const origExt = Ctx.prototype.getSupportedExtensions;
-    Ctx.prototype.getSupportedExtensions = function (...args) {
-      return origExt.apply(this, args) || [];
+      return origPrec.apply(this, args) || HIGHP;
     };
     const origParam = Ctx.prototype.getParameter;
     Ctx.prototype.getParameter = function (pname) {
-      const v = origParam.call(this, pname);
-      // VERSION / SHADING_LANGUAGE_VERSION / VENDOR / RENDERER — three calls
-      // .indexOf on these; some backends return null.
-      if (v == null && (pname === 0x1f02 || pname === 0x8b8c || pname === 0x1f00 || pname === 0x1f01)) {
-        return "";
-      }
-      return v;
+      const val = origParam.call(this, pname);
+      return val == null && pname in GL ? GL[pname] : val;
     };
   }
 }
 
 const Ballpit = ({ className = "", followCursor = true, ...props }) => {
-  const canvasRef = useRef(null);
-  const spheresInstanceRef = useRef(null);
+  const containerRef = useRef(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    patchShaderPrecision();
+    shimShaderPrecision();
 
-    // Degrade gracefully if a WebGL context still can't be created (e.g. context
-    // limit exhaustion) — the footer simply shows without the ballpit.
+    // Mint a FRESH <canvas> per mount (a canvas binds one GL context for its DOM
+    // lifetime + dispose() forceContextLoss(); StrictMode double-invokes effects,
+    // so reusing one node hands three a dead context on the second mount). Removed
+    // on cleanup.
+    const canvas = document.createElement("canvas");
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.display = "block";
+    container.appendChild(canvas);
+
+    let instance;
     try {
-      spheresInstanceRef.current = createBallpit(canvas, { followCursor, ...props });
+      instance = createBallpit(canvas, { followCursor, ...props });
     } catch (err) {
       console.warn("Ballpit: WebGL unavailable, skipping.", err);
-      canvas.style.display = "none"; // no broken-canvas glyph if the context fails
+      canvas.remove();
       return;
     }
 
     return () => {
-      if (spheresInstanceRef.current) {
-        spheresInstanceRef.current.dispose();
+      try {
+        instance.dispose();
+      } catch {
+        // ignore teardown races
       }
+      canvas.remove();
     };
   }, []);
 
-  return <canvas className={className} ref={canvasRef} style={{ width: "100%", height: "100%" }} />;
+  return <div ref={containerRef} className={className} style={{ width: "100%", height: "100%" }} />;
 };
 
 export default Ballpit;

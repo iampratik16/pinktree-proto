@@ -3,22 +3,22 @@
 import { useEffect, useRef, useState, type ComponentType } from "react";
 import dynamic from "next/dynamic";
 
-// Code-split the three.js ballpit; only load when the footer is near the viewport.
+// Code-split the three.js ballpit; only mount when the footer nears the viewport.
 const Ballpit = dynamic(() => import("@/components/media/Ballpit"), {
   ssr: false,
 }) as ComponentType<Record<string, unknown>>;
 
-// Bone → blush → rosewood balls (light-weighted) so they read clearly on the ink
-// footer — the default black would be invisible.
-const COLORS = [0xefeae1, 0xd8c2c5, 0xa86b72];
+// Pearlescent white → blush → rosewood, on-brand for Pink Tree. First entry also
+// tints the point light, so it stays light.
+const COLORS = [0xf7f1ef, 0xe8cbd1, 0xcf97a2];
 
 /**
- * Ballpit background for the footer's closing invitation. It's a 150-ball physics
- * sim, so it's gated to desktop, non-reduced-motion, non-Data-Saver, and only
- * mounts (creating its WebGL context) once the footer is near the viewport. The
- * component pauses its own rAF when off-screen / tab hidden.
+ * Full-bleed ballpit behind the whole footer. gravity: 0 so the (small, dense)
+ * bubbles fill the entire space evenly instead of piling at the bottom. Gated to
+ * non-reduced-motion / non-touch / non-Data-Saver; lazy-mounts its own WebGL and
+ * pauses when off-screen. Fresh canvas per mount (StrictMode-safe).
  */
-export default function BallpitBg() {
+export default function FooterBallpit() {
   const ref = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(false);
 
@@ -31,7 +31,7 @@ export default function BallpitBg() {
     const el = ref.current;
     if (!el) return;
     const io = new IntersectionObserver(([entry]) => setShow(entry.isIntersecting), {
-      rootMargin: "200px 0px",
+      rootMargin: "300px 0px",
     });
     io.observe(el);
     return () => io.disconnect();
@@ -42,16 +42,18 @@ export default function BallpitBg() {
       {show && (
         <Ballpit
           className="size-full"
-          count={150}
-          gravity={0.5}
-          friction={0.86}
-          wallBounce={0.92}
+          count={320}
+          gravity={0}
+          friction={0.9975}
+          wallBounce={0.9}
+          maxVelocity={0.12}
           followCursor
           colors={COLORS}
-          ambientIntensity={1.5}
-          lightIntensity={280}
-          minSize={0.7}
-          maxSize={1.35}
+          ambientIntensity={1.6}
+          lightIntensity={240}
+          minSize={0.35}
+          maxSize={0.85}
+          maxZ={1.4}
         />
       )}
     </div>

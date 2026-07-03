@@ -20,7 +20,7 @@ const FilterNav = GooeyNav as unknown as ComponentType<{
 
 export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
   const [filter, setFilter] = useState<Filter>("All");
-  const gridRef = useRef<HTMLUListElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
 
   // Filter pills with live counts (only disciplines that actually appear).
   const filters = useMemo(() => {
@@ -79,10 +79,15 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
     };
   }, [filter, visible.length]);
 
+  // Cuberto-style asymmetric masonry: two columns, the right one dropped down so
+  // the cards interlock rather than sit on a rigid grid line.
+  const columns: CaseStudy[][] = [[], []];
+  visible.forEach((s, i) => columns[i % 2].push(s));
+
   return (
     <div className="relative">
       {/* Filter — gooey nav (the same effect as the header) */}
-      <div className="sticky top-[var(--header-h)] z-20 mb-14 flex justify-start overflow-x-auto py-4">
+      <div className="sticky top-[var(--header-h)] z-20 mb-16 flex justify-start overflow-x-auto py-4">
         <FilterNav
           items={filters.map((f) => ({ label: f.key, href: "#" }))}
           onSelect={(index) => setFilter(filters[index].key)}
@@ -93,27 +98,34 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
         />
       </div>
 
-      <ul
+      <div
         ref={gridRef}
-        className="grid grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2 md:gap-y-24"
+        className="grid grid-cols-1 gap-x-[clamp(1.5rem,5vw,5.5rem)] md:grid-cols-2"
       >
-        {visible.map((study, i) => (
-          <li
-            key={study.slug}
-            data-grid-item
-            className={i % 3 === 0 ? "md:col-span-2" : ""}
+        {columns.map((col, c) => (
+          <div
+            key={c}
+            className={`flex flex-col gap-[clamp(4rem,10vh,9rem)] ${
+              c === 1 ? "md:mt-[16vh]" : ""
+            }`}
           >
-            <WorkCard
-              study={study}
-              index={studies.indexOf(study) + 1}
-              feature={i % 3 === 0}
-              headingLevel="h2"
-              bare
-              sizes={i % 3 === 0 ? "100vw" : "(min-width: 768px) 48vw, 100vw"}
-            />
-          </li>
+            {col.map((study, i) => (
+              <div key={study.slug} data-grid-item>
+                <WorkCard
+                  study={study}
+                  index={studies.indexOf(study) + 1}
+                  headingLevel="h2"
+                  bare
+                  noBend
+                  hoverPlay
+                  ratio={i % 2 === 0 ? "4 / 5" : "5 / 6"}
+                  sizes="(min-width: 768px) 46vw, 100vw"
+                />
+              </div>
+            ))}
+          </div>
         ))}
-      </ul>
+      </div>
 
       {visible.length === 0 && (
         <p className="py-20 text-center text-(--color-ink-soft)">

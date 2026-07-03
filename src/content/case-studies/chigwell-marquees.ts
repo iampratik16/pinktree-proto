@@ -19,12 +19,12 @@ const chigwellMarquees: CaseStudy = {
     "Websites & Digital",
     "Social Media",
   ],
-  heroMedia: img(
+  heroMedia: loop(
+    "/media/work/chigwell/hero",
     "/media/work/chigwell/hero.jpg",
     "The Chigwell Marquees — a candle-lit luxury marquee dressed for a private celebration.",
     2560,
     1600,
-    true,
   ),
   oneLineOutcome: "A complete brand world for an exceptional private venue.",
   theClient:

@@ -9,4 +9,5 @@ export default placeholderStudy({
   disciplines: ["Design & Branding", "Websites & Digital", "Print & Merchandise"],
   heroSrc: "/media/work/north-mymms/hero.jpg",
   heroAlt: "North Mymms Park — placeholder brand imagery.",
+  heroVideo: true,
 });

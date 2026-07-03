@@ -9,4 +9,5 @@ export default placeholderStudy({
   disciplines: ["Design & Branding", "Print & Merchandise", "Social Media"],
   heroSrc: "/media/work/central/hero.jpg",
   heroAlt: "Central Restaurant & Lounge — placeholder brand imagery.",
+  heroVideo: true,
 });

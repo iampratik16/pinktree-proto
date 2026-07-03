@@ -3,6 +3,7 @@ import Reveal from "@/components/motion/Reveal";
 import BendImage from "@/components/media/BendImage";
 import Img from "@/components/media/Img";
 import Video from "@/components/media/Video";
+import HoverVideo from "@/components/media/HoverVideo";
 import { ArrowUpRight } from "@/components/ui/icons";
 import type { CaseStudy } from "@/content/schema";
 
@@ -13,12 +14,16 @@ type Props = {
   /** Larger hero treatment for the first card. */
   feature?: boolean;
   sizes?: string;
+  /** Override the media aspect ratio (e.g. WorkGrid's staggered columns). */
+  ratio?: string;
   /** Heading level for the client name, to keep document outline sequential. */
   headingLevel?: "h2" | "h3";
   /** Skip the internal clip reveal (caller owns the animation, e.g. WorkGrid). */
   bare?: boolean;
   /** Render a plain, fixed image (no liquid edge bend) — e.g. the Proof feature. */
   noBend?: boolean;
+  /** Play video on hover (Cuberto-style) rather than ambiently in view. */
+  hoverPlay?: boolean;
 };
 
 export default function WorkCard({
@@ -26,23 +31,29 @@ export default function WorkCard({
   index,
   feature = false,
   sizes,
+  ratio,
   headingLevel: Heading = "h3",
   bare = false,
   noBend = false,
+  hoverPlay = false,
 }: Props) {
-  const aspect = feature ? "16 / 10" : "4 / 3";
+  const aspect = ratio ?? (feature ? "16 / 10" : "4 / 3");
   const imgSizes = sizes ?? (feature ? "100vw" : "(min-width: 768px) 50vw, 100vw");
 
-  // Image cards get the liquid-edge <BendImage> (cursor-driven mask, fixed
-  // image). `noBend` falls back to a plain static <Img>. The box stays a stable
-  // rounded rect with a transparent bg so the wavy edges reveal the page behind.
+  // Video heroes preview on hover (hoverPlay) or loop ambiently in view.
+  // Image heroes get the liquid-edge <BendImage> (cursor-driven mask); `noBend`
+  // falls back to a plain <Img>. The box is a stable rounded rect.
   const mediaBox = (
     <div
-      className="relative overflow-hidden rounded-[var(--radius-sm)]"
+      className="relative overflow-hidden rounded-[var(--radius-sm)] bg-(--color-ink)/5"
       style={{ aspectRatio: aspect }}
     >
       {study.heroMedia.type === "video" ? (
-        <Video media={study.heroMedia} fill sizes={imgSizes} />
+        hoverPlay ? (
+          <HoverVideo media={study.heroMedia} sizes={imgSizes} />
+        ) : (
+          <Video media={study.heroMedia} fill sizes={imgSizes} />
+        )
       ) : noBend ? (
         <Img media={study.heroMedia} fill sizes={imgSizes} className="size-full" />
       ) : (
@@ -53,6 +64,13 @@ export default function WorkCard({
           className="size-full"
         />
       )}
+
+      {/* Cuberto-style hover affordance — a quiet 'View' disc that scales in. */}
+      <span
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-1/2 z-[4] grid size-[clamp(4.5rem,7vw,6rem)] -translate-x-1/2 -translate-y-1/2 scale-90 place-items-center rounded-full bg-(--color-paper)/95 text-xs uppercase tracking-[0.14em] text-(--color-ink) opacity-0 shadow-[0_10px_40px_rgba(20,17,15,0.25)] backdrop-blur-sm transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-100 group-hover:opacity-100">
+        View
+      </span>
 
       {study.placeholder && (
         <span className="absolute left-4 top-4 z-[3] rounded-full bg-(--color-ink)/70 px-3 py-1 text-xs tracking-wide text-(--color-paper-on-dark) backdrop-blur-sm">

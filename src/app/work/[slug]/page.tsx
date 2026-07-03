@@ -88,7 +88,11 @@ export default async function CaseStudyPage({
       />
       {/* Hero */}
       <header className="relative flex min-h-svh flex-col justify-end overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
-        <div className="absolute inset-0">
+        <div
+          className={`absolute inset-0${
+            study.heroMedia.type !== "video" ? " cinematic-hero" : ""
+          }`}
+        >
           {study.heroMedia.type === "video" ? (
             <Video media={study.heroMedia} fill eager sizes="100vw" />
           ) : (
@@ -96,6 +100,10 @@ export default async function CaseStudyPage({
           )}
         </div>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-(--color-ink)/85 via-(--color-ink)/20 to-(--color-ink)/40" />
+        {/* Candlelight — warm flickering glow that makes the still feel filmed. */}
+        {study.heroMedia.type !== "video" && (
+          <div className="candle-glow pointer-events-none absolute inset-0" />
+        )}
 
         <div className="container-page relative z-10 pb-[clamp(3rem,8vh,6rem)] pt-[var(--header-h)]">
           <Reveal as="p" className="eyebrow text-(--color-paper-on-dark)/70">

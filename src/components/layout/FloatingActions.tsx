@@ -30,9 +30,9 @@ export default function FloatingActions() {
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat with Pink Tree Media on WhatsApp"
-        className="group flex items-center gap-0 overflow-hidden rounded-full bg-(--color-ink) py-3.5 pl-4 pr-4 text-(--color-paper-on-dark) shadow-[0_8px_30px_rgba(20,17,15,0.18)] transition-colors duration-500 hover:bg-[#1f8a5b]"
+        className="group flex items-center gap-0 overflow-hidden rounded-full bg-(--color-ink) py-4 pl-[1.15rem] pr-[1.15rem] text-(--color-paper-on-dark) shadow-[0_8px_30px_rgba(20,17,15,0.18)] transition-colors duration-500 hover:bg-[#1f8a5b]"
       >
-        <WhatsApp className="size-5 shrink-0" />
+        <WhatsApp className="size-7 shrink-0" />
         <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm tracking-tight opacity-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:ml-2.5 group-hover:max-w-[8rem] group-hover:opacity-100">
           WhatsApp
         </span>
@@ -41,9 +41,9 @@ export default function FloatingActions() {
       <TransitionLink
         href="/contact"
         aria-label="Quick enquiry"
-        className="group flex items-center gap-0 overflow-hidden rounded-full bg-(--color-accent) py-3.5 pl-4 pr-4 text-(--color-paper) shadow-[0_8px_30px_rgba(168,107,114,0.3)] transition-colors duration-500 hover:bg-(--color-ink)"
+        className="group flex items-center gap-0 overflow-hidden rounded-full bg-(--color-accent) py-4 pl-[1.15rem] pr-[1.15rem] text-(--color-paper) shadow-[0_8px_30px_rgba(168,107,114,0.3)] transition-colors duration-500 hover:bg-(--color-ink)"
       >
-        <ArrowUpRight className="size-5 shrink-0" />
+        <ArrowUpRight className="size-7 shrink-0" />
         <span className="max-w-0 overflow-hidden whitespace-nowrap text-sm tracking-tight opacity-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:ml-2.5 group-hover:max-w-[8rem] group-hover:opacity-100">
           Enquire
         </span>

@@ -1117,3 +1117,58 @@
     opacity: 0;
   }
 }
+
+/* Cinematic hero — a living film still: slow Ken Burns drift + candlelight
+   flicker over image heroes (work detail). Motion-safe; stilled for reduced motion. */
+.cinematic-hero {
+  animation: kenburns 26s ease-out both;
+  transform-origin: 60% 80%;
+  will-change: transform;
+}
+@keyframes kenburns {
+  0% {
+    transform: scale(1.06) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: scale(1.16) translate3d(-1.5%, -2%, 0);
+  }
+}
+.candle-glow {
+  background:
+    radial-gradient(60% 45% at 30% 92%, rgba(255, 176, 92, 0.22), transparent 70%),
+    radial-gradient(50% 40% at 78% 88%, rgba(255, 158, 74, 0.18), transparent 72%);
+  mix-blend-mode: screen;
+  animation: candle-flicker 5.5s ease-in-out infinite;
+  will-change: opacity;
+}
+@keyframes candle-flicker {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  18% {
+    opacity: 0.78;
+  }
+  33% {
+    opacity: 0.62;
+  }
+  52% {
+    opacity: 0.84;
+  }
+  70% {
+    opacity: 0.6;
+  }
+  86% {
+    opacity: 0.74;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-hero {
+    animation: none;
+    transform: scale(1.04);
+  }
+  .candle-glow {
+    animation: none;
+    opacity: 0.6;
+  }
+}
