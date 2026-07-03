@@ -1,4 +1,4 @@
-import type { CaseStudy, Discipline } from "@/content/schema";
+import type { CaseStudy, Discipline, Media } from "@/content/schema";
 import { img, loop } from "@/lib/media";
 
 /**
@@ -16,6 +16,10 @@ export function placeholderStudy(opts: {
   heroAlt: string;
   /** When true, the hero plays a Veo ambient loop on hover (poster = heroSrc). */
   heroVideo?: boolean;
+  /** Real project imagery for the "The Work" section. */
+  work?: Media[];
+  /** Live website we built for this client, if published. */
+  liveUrl?: string;
 }): CaseStudy {
   const { slug, client, sector, order, disciplines, heroSrc, heroAlt, heroVideo } = opts;
   return {
@@ -37,12 +41,13 @@ export function placeholderStudy(opts: {
       area,
       summary: `TODO: client to supply — what Pink Tree delivered under ${area}.`,
     })),
-    work: [],
+    work: opts.work ?? [],
     results: [],
     seo: {
       title: `${client} — Case study`,
       description: `A Pink Tree Media case study for ${client}. Details to follow.`,
       ogImage: heroSrc,
     },
+    liveUrl: opts.liveUrl,
   };
 }

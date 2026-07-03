@@ -55,33 +55,32 @@ const chigwellMarquees: CaseStudy = {
   ],
   work: [
     img(
-      "/media/work/chigwell/01.jpg",
-      "Brand stationery and monogram detail on uncoated stock.",
+      "/media/work/chigwell/site-01.jpg",
+      "A large clear-span luxury marquee dressed for a celebration.",
+      2560,
+      1440,
+    ),
+    img(
+      "/media/work/chigwell/site-02.jpg",
+      "An elegant event interior at The Chigwell Marquees.",
       1600,
       2000,
     ),
-    loop(
-      "/media/hero/home",
-      "/media/work/chigwell/hero.jpg",
-      "Ambient motion study — rosewood ink in water.",
-      1920,
-      960,
+    img(
+      "/media/work/chigwell/site-03.jpg",
+      "The venue's period hall interior.",
+      2400,
+      1500,
     ),
     img(
-      "/media/work/chigwell/02.jpg",
-      "Website art direction shown across devices.",
-      2560,
+      "/media/work/chigwell/site-04.jpg",
+      "An Asian wedding mandap staged within the marquee.",
       1600,
+      2000,
     ),
     img(
-      "/media/work/chigwell/03.jpg",
-      "Social grid detail — art-directed event photography.",
-      1600,
-      1600,
-    ),
-    img(
-      "/media/work/chigwell/04.jpg",
-      "Full-bleed interior of the marquee dressed for a wedding breakfast.",
+      "/media/work/chigwell/site-05.jpg",
+      "A full-bleed marquee interior dressed for a private event.",
       2560,
       1280,
     ),
@@ -97,6 +96,7 @@ const chigwellMarquees: CaseStudy = {
       "A complete brand world and fast, image-led website for The Chigwell Marquees, a luxury private events venue in Essex.",
     ogImage: "/media/work/chigwell/hero.jpg",
   },
+  liveUrl: "https://chigwell-marquees-v2.vercel.app",
 };
 
 export default chigwellMarquees;

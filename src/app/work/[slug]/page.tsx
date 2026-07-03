@@ -128,6 +128,19 @@ export default async function CaseStudyPage({
               ))}
             </ul>
           </Reveal>
+          {study.liveUrl && (
+            <Reveal delay={200}>
+              <a
+                href={study.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-9 inline-flex items-center gap-2 rounded-full border border-(--color-paper-on-dark)/40 px-6 py-3 text-sm tracking-tight text-(--color-paper-on-dark) transition-colors duration-500 hover:border-transparent hover:bg-(--color-paper-on-dark) hover:text-(--color-ink)"
+              >
+                Visit the live site
+                <ArrowUpRight className="size-4" />
+              </a>
+            </Reveal>
+          )}
         </div>
       </header>
 

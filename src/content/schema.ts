@@ -68,6 +68,8 @@ export const caseStudySchema = z.object({
     description: z.string().min(1),
     ogImage: z.string().min(1),
   }),
+  /** Live website we built for this client, if published. */
+  liveUrl: z.string().url().optional(),
 });
 
 export type ImageMedia = z.infer<typeof imageMediaSchema>;

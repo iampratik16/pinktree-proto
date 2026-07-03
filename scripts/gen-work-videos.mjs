@@ -32,7 +32,7 @@ const JOBS = {
   swifty: {
     dir: "swifty",
     prompt:
-      "Pulsing neon-green sound waves, a slowly rotating stylised vinyl, gently flowing electric forms, rhythmic saturated motion, graphic and hypnotic, no people",
+      "Live festival at night: pyrotechnic flames bursting upward, stage lights sweeping and pulsing, crowd silhouettes cheering with raised hands, drifting smoke lit purple and gold, energetic cinematic concert motion",
   },
   central: {
     dir: "central",

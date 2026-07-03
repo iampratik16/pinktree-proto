@@ -3,7 +3,7 @@ import Hero from "@/components/sections/Hero";
 import Reveal from "@/components/motion/Reveal";
 import SplitHeading from "@/components/motion/SplitHeading";
 import WorkCard from "@/components/work/WorkCard";
-import Img from "@/components/media/Img";
+import HoverVideo from "@/components/media/HoverVideo";
 import HyperspeedBg from "@/components/media/HyperspeedBg";
 import TiltedCard from "@/components/media/TiltedCard";
 import Button from "@/components/ui/Button";
@@ -11,19 +11,20 @@ import Magnetic from "@/components/motion/Magnetic";
 import TransitionLink from "@/components/ui/TransitionLink";
 import { ArrowUpRight } from "@/components/ui/icons";
 import { getAllCaseStudies } from "@/content";
-import { img } from "@/lib/media";
+import { loop } from "@/lib/media";
 import { CAPABILITIES } from "@/lib/site";
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-// AI-generated stand-in imagery for the capability cards (see CONTENT-TODO.md).
-const CAP_IMAGES = [
-  img("/media/capabilities/01.jpg", "An embossed luxury branding suite with a wax seal and colour swatches", 1200, 1600),
-  img("/media/capabilities/02.jpg", "A stack of foil-embossed print collateral beside a cotton tote", 1200, 1600),
-  img("/media/capabilities/03.jpg", "A minimal website shown on a laptop and phone on a marble desk", 1200, 1600),
-  img("/media/capabilities/04.jpg", "An editorial social-content flat lay of printed photo tiles and florals", 1200, 1600),
+// AI-generated stand-in imagery for the capability cards — each plays an ambient
+// video on hover (poster = the still). See CONTENT-TODO.md.
+const CAP_MEDIA = [
+  loop("/media/capabilities/01", "/media/capabilities/01.jpg", "An embossed luxury branding suite with a wax seal and colour swatches", 1200, 1600),
+  loop("/media/capabilities/02", "/media/capabilities/02.jpg", "A stack of foil-embossed print collateral beside a cotton tote", 1200, 1600),
+  loop("/media/capabilities/03", "/media/capabilities/03.jpg", "A minimal website shown on a laptop and phone on a marble desk", 1200, 1600),
+  loop("/media/capabilities/04", "/media/capabilities/04.jpg", "An editorial social-content flat lay of printed photo tiles and florals", 1200, 1600),
 ];
 
 export default function Home() {
@@ -76,9 +77,8 @@ export default function Home() {
                   </span>
                   <div className="relative -mt-5 aspect-[4/5]">
                     <TiltedCard rotateAmplitude={12} scaleOnHover={1.08}>
-                      <Img
-                        media={CAP_IMAGES[i]}
-                        fill
+                      <HoverVideo
+                        media={CAP_MEDIA[i]}
                         sizes="(min-width: 1024px) 22vw, 45vw"
                       />
                     </TiltedCard>
