@@ -4,6 +4,8 @@ import Reveal from "@/components/motion/Reveal";
 import SplitHeading from "@/components/motion/SplitHeading";
 import WorkCard from "@/components/work/WorkCard";
 import Img from "@/components/media/Img";
+import HyperspeedBg from "@/components/media/HyperspeedBg";
+import TiltedCard from "@/components/media/TiltedCard";
 import Button from "@/components/ui/Button";
 import Magnetic from "@/components/motion/Magnetic";
 import TransitionLink from "@/components/ui/TransitionLink";
@@ -72,13 +74,14 @@ export default function Home() {
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <div className="cap-card-media relative -mt-5 aspect-[4/5] overflow-hidden rounded-[var(--radius-sm)] bg-(--color-hairline)">
-                    <Img
-                      media={CAP_IMAGES[i]}
-                      fill
-                      sizes="(min-width: 1024px) 22vw, 45vw"
-                      className="cap-card-img"
-                    />
+                  <div className="relative -mt-5 aspect-[4/5]">
+                    <TiltedCard rotateAmplitude={12} scaleOnHover={1.08}>
+                      <Img
+                        media={CAP_IMAGES[i]}
+                        fill
+                        sizes="(min-width: 1024px) 22vw, 45vw"
+                      />
+                    </TiltedCard>
                   </div>
                   <div className="mt-5 flex items-center justify-between gap-3">
                     <h3 className="text-h3 font-display font-medium tracking-tight transition-colors duration-500 group-hover:text-(--color-accent)">
@@ -125,16 +128,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Approach teaser */}
-      <section className="section bg-(--color-ink) text-(--color-paper-on-dark)">
-        <div className="container-page grid gap-y-10 md:grid-cols-12">
-          <Reveal as="p" className="eyebrow text-(--color-paper-on-dark)/70 md:col-span-3">
+      {/* Approach teaser — Hyperspeed highway background */}
+      <section className="section relative isolate overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
+        <HyperspeedBg />
+        {/* Scrim: darkest under the statement (right), lets the streaks breathe
+            on the left, so the copy stays legible over the moving lights. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-l from-(--color-ink)/85 via-(--color-ink)/45 to-(--color-ink)/60"
+        />
+        <div className="container-page relative z-10 grid gap-y-10 md:grid-cols-12">
+          <Reveal
+            as="p"
+            className="eyebrow text-(--color-paper-on-dark)/80 [text-shadow:0_1px_12px_rgba(20,17,15,0.8)] md:col-span-3"
+          >
             Our approach
           </Reveal>
           <div className="md:col-span-8 md:col-start-5">
             <SplitHeading
               as="p"
-              className="font-serif text-h2 font-light leading-[1.18] tracking-tight"
+              className="font-serif text-h2 font-light leading-[1.18] tracking-tight [text-shadow:0_2px_24px_rgba(20,17,15,0.7)]"
             >
               We don’t chase volume. We partner with a small number of ambitious
               brands, for the long term, and treat their reputation as our own.

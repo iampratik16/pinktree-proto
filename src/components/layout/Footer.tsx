@@ -1,5 +1,6 @@
 import TransitionLink from "@/components/ui/TransitionLink";
 import Reveal from "@/components/motion/Reveal";
+import BallpitBg from "@/components/media/BallpitBg";
 import { ArrowUpRight, Instagram } from "@/components/ui/icons";
 import { CONTACT, NAV, SITE } from "@/lib/site";
 
@@ -9,19 +10,19 @@ export default function Footer() {
   return (
     <footer className="bg-(--color-ink) text-(--color-paper-on-dark)">
       <div className="container-page section">
-        {/* Closing invitation */}
-        <Reveal>
-          <p className="eyebrow text-(--color-paper-on-dark)/70">Start a conversation</p>
-          <TransitionLink
-            href="/contact"
-            className="group mt-8 inline-flex items-end gap-4"
-          >
-            <span className="font-display text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.95] tracking-tight">
-              Let’s begin
-            </span>
-            <ArrowUpRight className="mb-2 size-[clamp(1.75rem,4vw,3rem)] text-(--color-accent-soft) transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2" />
-          </TransitionLink>
-        </Reveal>
+        {/* Closing invitation — over an interactive ballpit */}
+        <div className="relative -mt-6 overflow-hidden">
+          <BallpitBg />
+          <Reveal className="relative z-10 flex min-h-[clamp(300px,42vh,460px)] flex-col justify-end">
+            <p className="eyebrow text-(--color-paper-on-dark)/70">Start a conversation</p>
+            <TransitionLink href="/contact" className="group mt-8 inline-flex items-end gap-4">
+              <span className="font-display text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.95] tracking-tight [text-shadow:0_2px_30px_rgba(20,17,15,0.7)]">
+                Let’s begin
+              </span>
+              <ArrowUpRight className="mb-2 size-[clamp(1.75rem,4vw,3rem)] text-(--color-accent-soft) transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2 group-hover:-translate-y-2" />
+            </TransitionLink>
+          </Reveal>
+        </div>
 
         <hr className="mt-20 h-px w-full border-0 bg-(--color-hairline-dark)" />
 

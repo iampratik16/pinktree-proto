@@ -37,7 +37,9 @@ export default function Cursor() {
         visible = true;
         el.style.opacity = "1";
       }
-      const target = e.target as HTMLElement;
+      // Guard: synthetic events (session-replay tools, tests) can fire with a
+      // non-Element target (e.g. window), which has no .closest().
+      const target = e.target instanceof Element ? (e.target as HTMLElement) : null;
       const labelled = target?.closest<HTMLElement>("[data-cursor-label]");
       const interactive = target?.closest(
         "a, button, [role='button'], input, textarea, select, label, [data-cursor='grow']",

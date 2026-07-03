@@ -1,10 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import TransitionLink from "@/components/ui/TransitionLink";
 import Logo from "@/components/layout/Logo";
 import Magnetic from "@/components/motion/Magnetic";
+import GooeyNav from "@/components/layout/GooeyNav";
 import { NAV } from "@/lib/site";
 
 export default function Header() {
@@ -40,11 +41,6 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  const isActive = useCallback(
-    (href: string) => pathname === href || (href !== "/" && pathname.startsWith(href)),
-    [pathname],
-  );
-
   // Routes that open with a dark, full-bleed hero need light header text
   // until the user scrolls into the solid paper header.
   const darkHero = pathname === "/" || /^\/work\/[^/]+$/.test(pathname);
@@ -67,17 +63,14 @@ export default function Header() {
             <Logo />
           </TransitionLink>
 
-          <nav aria-label="Primary" className="hidden items-center gap-10 md:flex">
-            {NAV.map((item) => (
-              <TransitionLink
-                key={item.href}
-                href={item.href}
-                data-active={isActive(item.href)}
-                className="link-underline text-sm tracking-tight data-[active=true]:font-medium data-[active=true]:underline data-[active=true]:decoration-1 data-[active=true]:underline-offset-[6px]"
-              >
-                {item.label}
-              </TransitionLink>
-            ))}
+          <div className="hidden items-center gap-4 md:flex">
+            <GooeyNav
+              items={NAV}
+              initialActiveIndex={-1}
+              particleCount={12}
+              particleDistances={[60, 10]}
+              particleR={80}
+            />
             <Magnetic strength={0.4}>
               <TransitionLink
                 href="/contact"
@@ -86,7 +79,7 @@ export default function Header() {
                 Enquire
               </TransitionLink>
             </Magnetic>
-          </nav>
+          </div>
 
           <button
             type="button"

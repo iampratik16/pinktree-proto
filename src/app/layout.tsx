@@ -5,6 +5,8 @@ import SmoothScroll from "@/components/providers/SmoothScroll";
 import RevealObserver from "@/components/providers/RevealObserver";
 import Cursor from "@/components/providers/Cursor";
 import PageTransition from "@/components/providers/PageTransition";
+import Preloader from "@/components/providers/Preloader";
+import SiteBackground from "@/components/layout/SiteBackground";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FloatingActions from "@/components/layout/FloatingActions";
@@ -65,6 +67,8 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <Preloader />
+        <SiteBackground />
         <SmoothScroll />
         <RevealObserver />
         <Cursor />
