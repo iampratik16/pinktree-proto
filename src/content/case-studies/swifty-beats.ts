@@ -8,6 +8,6 @@ export default placeholderStudy({
   order: 3,
   disciplines: ["Design & Branding", "Social Media"],
   heroSrc: "/media/work/swifty/hero.jpg",
-  heroAlt: "Swifty Beats — placeholder brand imagery.",
+  heroAlt: "Swifty Beats — bold electric-green brand artwork.",
   heroVideo: true,
 });

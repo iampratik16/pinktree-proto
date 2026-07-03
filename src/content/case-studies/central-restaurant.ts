@@ -8,6 +8,6 @@ export default placeholderStudy({
   order: 4,
   disciplines: ["Design & Branding", "Print & Merchandise", "Social Media"],
   heroSrc: "/media/work/central/hero.jpg",
-  heroAlt: "Central Restaurant & Lounge — placeholder brand imagery.",
+  heroAlt: "Central Restaurant & Lounge — bold amber brand artwork.",
   heroVideo: true,
 });

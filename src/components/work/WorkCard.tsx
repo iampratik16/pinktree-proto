@@ -4,6 +4,7 @@ import BendImage from "@/components/media/BendImage";
 import Img from "@/components/media/Img";
 import Video from "@/components/media/Video";
 import HoverVideo from "@/components/media/HoverVideo";
+import CursorViewLabel from "@/components/work/CursorViewLabel";
 import { ArrowUpRight } from "@/components/ui/icons";
 import type { CaseStudy } from "@/content/schema";
 
@@ -65,12 +66,8 @@ export default function WorkCard({
         />
       )}
 
-      {/* Cuberto-style hover affordance — a quiet 'View' disc that scales in. */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 z-[4] grid size-[clamp(4.5rem,7vw,6rem)] -translate-x-1/2 -translate-y-1/2 scale-90 place-items-center rounded-full bg-(--color-paper)/95 text-xs uppercase tracking-[0.14em] text-(--color-ink) opacity-0 shadow-[0_10px_40px_rgba(20,17,15,0.25)] backdrop-blur-sm transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-100 group-hover:opacity-100">
-        View
-      </span>
+      {/* Hover affordance — a 'View' disc that follows the cursor (Collins-style). */}
+      <CursorViewLabel />
 
       {study.placeholder && (
         <span className="absolute left-4 top-4 z-[3] rounded-full bg-(--color-ink)/70 px-3 py-1 text-xs tracking-wide text-(--color-paper-on-dark) backdrop-blur-sm">

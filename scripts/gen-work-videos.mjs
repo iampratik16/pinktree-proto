@@ -16,31 +16,33 @@ const PROJECT = process.env.PROJECT;
 const LOCATION = process.env.LOCATION ?? "us-central1";
 const MODELS = ["veo-3.0-fast-generate-001", "veo-2.0-generate-001"];
 
+// Motion for the bold abstract "Collins" stills — slow, hypnotic flow of
+// saturated colour and morphing graphic forms (no people).
 const JOBS = {
   chigwell: {
     dir: "chigwell",
     prompt:
-      "Candle flames flickering softly, sheer white drapes swaying gently in a light breeze, warm evening light shifting through the glass marquee roof, very slow gentle camera push-in, serene luxurious wedding ambiance, subtle cinematic motion, no people moving",
+      "Slow flowing motion of crimson silk and drifting red petals, gently morphing abstract forms, saturated colour billowing, subtle cinematic movement, hypnotic and luxurious, no people",
   },
   aya: {
     dir: "aya",
     prompt:
-      "Extremely subtle ambient motion, soft warm light gently shifting, faint drift of a few hair strands, a slow calm breath, delicate and elegant, minimal restrained movement, cinematic beauty portrait",
+      "Swirling glossy cream and serum in slow motion, drifting cosmetic droplets and petals, gently morphing magenta and hot-pink flow, hypnotic saturated movement, no people",
   },
   swifty: {
     dir: "swifty",
     prompt:
-      "Vinyl record slowly rotating on the turntable, VU meter needles gently flickering, warm amber studio light softly pulsing, subtle slow camera drift, moody analog music studio ambiance, cinematic",
+      "Pulsing neon-green sound waves, a slowly rotating stylised vinyl, gently flowing electric forms, rhythmic saturated motion, graphic and hypnotic, no people",
   },
   central: {
     dir: "central",
     prompt:
-      "Warm candlelight and wall-sconce lights flickering softly, subtle ambient life in an elegant dining room, slow refined camera drift, intimate evening restaurant ambiance, cinematic, no people moving",
+      "Slow drifting molten amber light, gently morphing abstract culinary forms and glassware, warm saturated orange flow, subtle cinematic motion, no people",
   },
   "north-mymms": {
     dir: "north-mymms",
     prompt:
-      "Soft natural daylight gently shifting, a faint breeze through the scene, slow graceful camera drift across the elegant space, timeless refined stately ambiance, subtle cinematic motion",
+      "Slow drifting light across abstract electric-blue architectural forms, gentle graphic motion, saturated cobalt flow, cinematic and refined, no people",
   },
 };
 
