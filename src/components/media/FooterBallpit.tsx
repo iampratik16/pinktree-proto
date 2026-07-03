@@ -13,20 +13,23 @@ const Ballpit = dynamic(() => import("@/components/media/Ballpit"), {
 const COLORS = [0xf7f1ef, 0xe8cbd1, 0xcf97a2];
 
 /**
- * Full-bleed ballpit behind the whole footer. gravity: 0 so the (small, dense)
- * bubbles fill the entire space evenly instead of piling at the bottom. Gated to
- * non-reduced-motion / non-touch / non-Data-Saver; lazy-mounts its own WebGL and
- * pauses when off-screen. Fresh canvas per mount (StrictMode-safe).
+ * Full-bleed ballpit behind the whole footer. gravity: 0 so bubbles fill the space
+ * evenly instead of piling at the bottom. On mobile the motion is slowed right down
+ * and interaction is OFF (followCursor:false → no touch handler → page still
+ * scrolls over the footer); desktop keeps the livelier, cursor-reactive version.
+ * Gated to non-reduced-motion / non-Data-Saver; lazy-mounts its own WebGL and
+ * pauses off-screen. Fresh canvas per mount (StrictMode-safe).
  */
 export default function FooterBallpit() {
   const ref = useRef<HTMLDivElement>(null);
   const [show, setShow] = useState(false);
+  const [mobile, setMobile] = useState(false);
 
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const coarse = window.matchMedia("(hover: none)").matches;
     const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
-    if (reduced || coarse || nav.connection?.saveData === true) return;
+    if (reduced || nav.connection?.saveData === true) return;
+    setMobile(window.matchMedia("(max-width: 767px)").matches);
 
     const el = ref.current;
     if (!el) return;
@@ -42,18 +45,19 @@ export default function FooterBallpit() {
       {show && (
         <Ballpit
           className="size-full"
-          count={320}
           gravity={0}
-          friction={0.9975}
-          wallBounce={0.9}
-          maxVelocity={0.12}
-          followCursor
           colors={COLORS}
           ambientIntensity={1.6}
           lightIntensity={240}
-          minSize={0.35}
-          maxSize={0.85}
           maxZ={1.4}
+          // Mobile: fewer, larger, slow, calm, non-interactive. Desktop: lively.
+          count={mobile ? 130 : 320}
+          friction={mobile ? 0.95 : 0.9975}
+          wallBounce={mobile ? 0.55 : 0.9}
+          maxVelocity={mobile ? 0.035 : 0.12}
+          followCursor={!mobile}
+          minSize={mobile ? 0.5 : 0.35}
+          maxSize={mobile ? 1.05 : 0.85}
         />
       )}
     </div>

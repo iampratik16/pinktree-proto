@@ -677,23 +677,29 @@ function createBallpit(e, t = {}) {
   const r = new a();
   let c = false;
 
-  e.style.touchAction = "none";
-  e.style.userSelect = "none";
-  e.style.webkitUserSelect = "none";
-
-  const h = S({
-    domElement: e,
-    onMove() {
-      n.setFromCamera(h.nPosition, i.camera);
-      i.camera.getWorldDirection(o.normal);
-      n.ray.intersectPlane(o, r);
-      s.physics.center.copy(r);
-      s.config.controlSphere0 = true;
-    },
-    onLeave() {
-      s.config.controlSphere0 = false;
-    },
-  });
+  // Interaction (cursor/touch push) is opt-out via followCursor:false. Skipping it
+  // avoids the global touch preventDefault that would otherwise hijack page
+  // scrolling over the canvas on mobile.
+  const interactive = t.followCursor !== false;
+  let h = null;
+  if (interactive) {
+    e.style.touchAction = "none";
+    e.style.userSelect = "none";
+    e.style.webkitUserSelect = "none";
+    h = S({
+      domElement: e,
+      onMove() {
+        n.setFromCamera(h.nPosition, i.camera);
+        i.camera.getWorldDirection(o.normal);
+        n.ray.intersectPlane(o, r);
+        s.physics.center.copy(r);
+        s.config.controlSphere0 = true;
+      },
+      onLeave() {
+        s.config.controlSphere0 = false;
+      },
+    });
+  }
   function initialize(e) {
     if (s) {
       i.clear();
@@ -721,7 +727,7 @@ function createBallpit(e, t = {}) {
       c = !c;
     },
     dispose() {
-      h.dispose();
+      h?.dispose();
       i.dispose();
     },
   };
