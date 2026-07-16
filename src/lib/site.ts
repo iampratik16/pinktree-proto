@@ -34,12 +34,14 @@ export const CONTACT = {
   social: {
     handle: "@pinktreemediauk",
     instagram: "https://www.instagram.com/pinktreemediauk",
+    tiktok: "https://www.tiktok.com/@pinktreemediauk",
+    linkedin: "https://www.linkedin.com/company/pinktreemediauk",
   },
 } as const;
 
 export const NAV: ReadonlyArray<{ label: string; href: string }> = [
-  { label: "Work", href: "/work" },
   { label: "About", href: "/about" },
+  { label: "Work", href: "/work" },
   { label: "Contact", href: "/contact" },
 ];
 

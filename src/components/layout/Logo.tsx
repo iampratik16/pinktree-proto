@@ -1,32 +1,46 @@
 import Image from "next/image";
 
 type Props = {
+  /** Height + any extra classes. Callers own the height so it never conflicts. */
   className?: string;
-  /** Show the wordmark text alongside the mark. */
-  wordmark?: boolean;
+  /** Use the light variant (pink icon + cream text) for dark surfaces. */
+  onDark?: boolean;
 };
 
 /**
- * Pink Tree brand lockup: the rosewood tree mark (client-supplied) + optional
- * wordmark. The mark is a transparent PNG so it sits on light or dark sections;
- * the wordmark uses currentColor and adapts with the header theme.
+ * Pink Tree Media brand lockup (client-supplied). Always shown in colour: on light
+ * surfaces the full-colour PNG (dark wordmark); on dark surfaces / over the dark
+ * hero the light variant (pink icon kept, wordmark recoloured to cream) so it stays
+ * legible without going monochrome white.
  */
-export default function Logo({ className = "", wordmark = true }: Props) {
+export default function Logo({ className = "h-14 sm:h-[4.25rem]", onDark = false }: Props) {
+  const base = `w-auto shrink-0 ${className}`;
+
+  if (onDark) {
+    return (
+      <Image src="/brand/logo-light.png" alt="Pink Tree Media" width={400} height={99} priority className={base} />
+    );
+  }
+
+  // Header (auto): colour on the solid/light bar, light variant over the dark hero.
   return (
-    <span className={`inline-flex items-center gap-2.5 sm:gap-3 ${className}`}>
+    <>
       <Image
-        src="/brand/mark.png"
+        src="/brand/logo.png"
         alt="Pink Tree Media"
-        width={48}
-        height={48}
+        width={400}
+        height={99}
         priority
-        className="h-10 w-auto shrink-0 sm:h-12"
+        className={`${base} group-data-[over-hero=true]/header:hidden`}
       />
-      {wordmark && (
-        <span className="font-display text-[1.3rem] font-semibold tracking-tight sm:text-[1.6rem]">
-          Pink Tree
-        </span>
-      )}
-    </span>
+      <Image
+        src="/brand/logo-light.png"
+        alt=""
+        aria-hidden
+        width={400}
+        height={99}
+        className={`${base} hidden group-data-[over-hero=true]/header:block`}
+      />
+    </>
   );
 }

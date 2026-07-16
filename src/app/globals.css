@@ -42,7 +42,7 @@
   --container-max: 1600px;
   --gutter: clamp(1.25rem, 5vw, 6rem);
   --section-y: clamp(5rem, 12vh, 12rem);
-  --header-h: 5rem;
+  --header-h: clamp(5.5rem, 4rem + 3vw, 6.75rem);
 
   /* ---- Motion ------------------------------------------------------------ */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);

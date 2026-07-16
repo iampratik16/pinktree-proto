@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import TransitionLink from "@/components/ui/TransitionLink";
 import Logo from "@/components/layout/Logo";
-import Magnetic from "@/components/motion/Magnetic";
 import GooeyNav from "@/components/layout/GooeyNav";
-import { NAV } from "@/lib/site";
+import { Instagram, TikTok, LinkedIn } from "@/components/ui/icons";
+import { NAV, CONTACT } from "@/lib/site";
 
 export default function Header() {
   const pathname = usePathname();
@@ -63,7 +63,7 @@ export default function Header() {
             <Logo />
           </TransitionLink>
 
-          <div className="hidden items-center gap-4 md:flex">
+          <div className="hidden items-center gap-6 md:flex">
             <GooeyNav
               items={NAV}
               initialActiveIndex={-1}
@@ -71,14 +71,35 @@ export default function Header() {
               particleDistances={[60, 10]}
               particleR={80}
             />
-            <Magnetic strength={0.4}>
-              <TransitionLink
-                href="/contact"
-                className="inline-block rounded-full border border-current/30 px-5 py-2.5 text-sm tracking-tight transition-colors duration-500 hover:text-(--color-accent)"
+            <div className="flex items-center gap-4">
+              <a
+                href={CONTACT.social.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Pink Tree Media on Instagram"
+                className="transition-colors duration-500 hover:text-(--color-accent)"
               >
-                Enquire
-              </TransitionLink>
-            </Magnetic>
+                <Instagram className="size-[1.35rem]" />
+              </a>
+              <a
+                href={CONTACT.social.tiktok}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Pink Tree Media on TikTok"
+                className="transition-colors duration-500 hover:text-(--color-accent)"
+              >
+                <TikTok className="size-[1.35rem]" />
+              </a>
+              <a
+                href={CONTACT.social.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Pink Tree Media on LinkedIn"
+                className="transition-colors duration-500 hover:text-(--color-accent)"
+              >
+                <LinkedIn className="size-[1.35rem]" />
+              </a>
+            </div>
           </div>
 
           <button
