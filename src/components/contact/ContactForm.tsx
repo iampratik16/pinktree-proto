@@ -174,7 +174,7 @@ function Field({ id, name, label, type, required, autoComplete, value, error, on
         onBlur={onBlur}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="border-b border-(--color-hairline) bg-transparent pb-3 text-lg outline-none transition-colors duration-300 focus:border-(--color-accent) aria-[invalid=true]:border-(--color-accent)"
+        className="w-full rounded-xl border border-(--color-ink)/15 bg-(--color-paper)/80 px-4 py-3.5 text-lg shadow-sm outline-none transition-[color,background-color,border-color,box-shadow] duration-300 focus:border-(--color-accent) focus:bg-(--color-paper) focus:shadow-[0_0_0_3px_rgba(168,107,114,0.18)] aria-[invalid=true]:border-(--color-accent)"
       />
       {error && (
         <span id={`${id}-error`} className="mt-2 text-sm text-(--color-accent-ink)">
@@ -210,7 +210,7 @@ function TextArea({
         onBlur={onBlur}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        className="resize-none border-b border-(--color-hairline) bg-transparent pb-3 text-lg outline-none transition-colors duration-300 focus:border-(--color-accent) aria-[invalid=true]:border-(--color-accent)"
+        className="w-full resize-none rounded-xl border border-(--color-ink)/15 bg-(--color-paper)/80 px-4 py-3.5 text-lg shadow-sm outline-none transition-[color,background-color,border-color,box-shadow] duration-300 focus:border-(--color-accent) focus:bg-(--color-paper) focus:shadow-[0_0_0_3px_rgba(168,107,114,0.18)] aria-[invalid=true]:border-(--color-accent)"
       />
       {error && (
         <span id={`${id}-error`} className="mt-2 text-sm text-(--color-accent-ink)">

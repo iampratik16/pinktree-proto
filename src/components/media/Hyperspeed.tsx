@@ -366,7 +366,10 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
           alpha: true,
         });
         this.renderer.setSize(initW, initH, false);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+        // Cap at 1 (was 1.5): this ambient, bloom-blurred highway has no fine
+        // detail, so retina resolution just burns GPU during scroll. dpr 1 roughly
+        // halves the fragment work on retina and keeps scrolling smooth.
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1));
         this.composer = new EffectComposer(this.renderer);
         container.append(this.renderer.domElement);
 
@@ -645,6 +648,14 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
 
       tick() {
         if (this.disposed) return;
+        requestAnimationFrame(this.tick);
+
+        // Throttle this ambient effect to ~30fps so it doesn't compete with the
+        // page's 60fps scroll. clock.getDelta() still measures the real elapsed
+        // time on rendered frames, so the highway's motion speed is unchanged.
+        const now = performance.now();
+        if (this._lastFrame !== undefined && now - this._lastFrame < 32) return;
+        this._lastFrame = now;
 
         if (!this.hasValidSize) {
           const w = this.container.offsetWidth;
@@ -656,7 +667,6 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
             this.composer.setSize(w, h);
             this.hasValidSize = true;
           } else {
-            requestAnimationFrame(this.tick);
             return;
           }
         }
@@ -674,8 +684,6 @@ const Hyperspeed = ({ effectOptions = DEFAULT_EFFECT_OPTIONS }) => {
           this.render(delta);
           this.update(delta);
         }
-
-        requestAnimationFrame(this.tick);
       }
     }
 

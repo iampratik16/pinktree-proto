@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Reveal from "@/components/motion/Reveal";
 import MaskHeading from "@/components/motion/MaskHeading";
 import ContactForm from "@/components/contact/ContactForm";
-import { WhatsApp, Instagram } from "@/components/ui/icons";
+import { WhatsApp, Instagram, TikTok, LinkedIn, YouTube } from "@/components/ui/icons";
 import { CONTACT, whatsappHref } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -58,25 +58,28 @@ export default function ContactPage() {
             </address>
           </Reveal>
 
-          <Reveal className="flex flex-col gap-3">
-            <a
-              href={whatsappHref()}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex w-fit items-center gap-3 rounded-full border border-(--color-ink)/20 px-6 py-3.5 text-sm tracking-tight transition-colors duration-500 hover:border-[#1f8a5b] hover:text-[#1f8a5b]"
-            >
-              <WhatsApp className="size-5" />
-              Message us on WhatsApp
-            </a>
-            <a
-              href={CONTACT.social.instagram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex w-fit items-center gap-3 px-1 text-sm tracking-tight text-(--color-ink-soft) transition-colors duration-500 hover:text-(--color-accent)"
-            >
-              <Instagram className="size-5" />
-              {CONTACT.social.handle}
-            </a>
+          <Reveal>
+            <p className="eyebrow">Connect</p>
+            <div className="mt-5 flex items-center gap-5">
+              {[
+                { label: "Message Pink Tree Media on WhatsApp", href: whatsappHref(), Icon: WhatsApp },
+                { label: "Pink Tree Media on Instagram", href: CONTACT.social.instagram, Icon: Instagram },
+                { label: "Pink Tree Media on TikTok", href: CONTACT.social.tiktok, Icon: TikTok },
+                { label: "Pink Tree Media on LinkedIn", href: CONTACT.social.linkedin, Icon: LinkedIn },
+                { label: "Pink Tree Media on YouTube", href: CONTACT.social.youtube, Icon: YouTube },
+              ].map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="text-(--color-ink-soft) transition-colors duration-500 hover:text-(--color-accent)"
+                >
+                  <Icon className="size-6" />
+                </a>
+              ))}
+            </div>
           </Reveal>
         </aside>
       </div>

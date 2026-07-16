@@ -6,8 +6,6 @@ import WorkCard from "@/components/work/WorkCard";
 import HoverVideo from "@/components/media/HoverVideo";
 import HyperspeedBg from "@/components/media/HyperspeedBg";
 import TiltedCard from "@/components/media/TiltedCard";
-import Button from "@/components/ui/Button";
-import Magnetic from "@/components/motion/Magnetic";
 import TransitionLink from "@/components/ui/TransitionLink";
 import { ArrowUpRight } from "@/components/ui/icons";
 import { getAllCaseStudies } from "@/content";
@@ -129,7 +127,7 @@ export default function Home() {
       </section>
 
       {/* Approach teaser, Hyperspeed highway background */}
-      <section className="section relative isolate overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
+      <section className="section pb-[clamp(1.5rem,3vh,3rem)] relative isolate overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
         <HyperspeedBg />
         {/* Scrim: darkest under the statement (right), lets the streaks breathe
             on the left, so the copy stays legible over the moving lights. */}
@@ -165,25 +163,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="section container-page text-center">
-        <Reveal as="p" className="eyebrow">
-          Begin
-        </Reveal>
-        <SplitHeading
-          as="h2"
-          className="mx-auto mt-8 max-w-[20ch] text-display font-light leading-[1.0] tracking-tight"
-        >
-          Start a conversation.
-        </SplitHeading>
-        <Reveal delay={150} className="mt-12 flex justify-center">
-          <Magnetic strength={0.5}>
-            <Button href="/contact" variant="solid" withArrow>
-              Start a conversation
-            </Button>
-          </Magnetic>
-        </Reveal>
-      </section>
+      {/* Blank band separating the dark approach section from the light footer */}
+      <div aria-hidden className="h-[clamp(4rem,8vh,7rem)] bg-(--color-paper)" />
     </>
   );
 }

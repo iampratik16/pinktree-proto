@@ -19,9 +19,9 @@ export const CONTACT = {
   email: "info@pinktreemedia.com",
   phoneDisplay: "+44 (0) 20 7193 1033",
   phoneHref: "+442071931033",
-  // TODO: client to confirm whether WhatsApp is the landline or a dedicated
-  // WhatsApp Business line (planning §13.8). Placeholder uses the landline.
-  whatsappNumber: "442071931033",
+  // Dedicated WhatsApp line (client-confirmed): +44 7347 741272.
+  // wa.me needs international digits only — no +, spaces, or leading zero.
+  whatsappNumber: "447347741272",
   whatsappMessage:
     "Hello Pink Tree Media, I'd like to start a conversation about a project.",
   address: {
@@ -36,6 +36,7 @@ export const CONTACT = {
     instagram: "https://www.instagram.com/pinktreemediauk",
     tiktok: "https://www.tiktok.com/@pinktreemediauk",
     linkedin: "https://www.linkedin.com/company/pinktreemediauk",
+    youtube: "https://www.youtube.com/@pinktreemediauk",
   },
 } as const;
 

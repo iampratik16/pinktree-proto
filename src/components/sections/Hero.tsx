@@ -21,7 +21,7 @@ export default function Hero() {
         <MaskHeading
           as="h1"
           delay={40}
-          className="display max-w-[18ch] text-(--color-paper-on-dark)"
+          className="display max-w-[18ch] text-[clamp(2.05rem,4.3vw,5rem)] text-(--color-paper-on-dark)"
         >
           Complete marketing solutions for ambitious brands.
         </MaskHeading>

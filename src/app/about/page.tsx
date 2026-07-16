@@ -33,8 +33,11 @@ const BLOCKS = [
   },
 ];
 
-const about01 = img("/media/about/01.jpg", "Studio detail, considered, tactile craft.", 1600, 2000);
-const about02 = img("/media/about/02.jpg", "An expansive, calm working space.", 2560, 1600);
+const about01 = img("/media/about/01.jpg", "A calm executive office with warm walnut interiors and a city view.", 1600, 2000);
+const about02 = img("/media/about/02.jpg", "A boardroom overlooking the London skyline at golden hour.", 2560, 1600);
+const about03 = img("/media/about/03.jpg", "The City of London skyline at golden hour.", 2400, 1600);
+const about04 = img("/media/about/04.jpg", "A warm, plant-filled luxury creative office with skyline views.", 2400, 1600);
+const about05 = img("/media/about/05.jpg", "A boardroom set for a business meeting, the city beyond.", 2400, 1600);
 
 export default function AboutPage() {
   return (
@@ -74,6 +77,18 @@ export default function AboutPage() {
             </Reveal>
           ))}
         </dl>
+      </section>
+
+      {/* Gallery — the premium world we work in */}
+      <section className="pb-(--section-y)">
+        <Reveal as="p" className="eyebrow text-(--color-accent-ink)">
+          The setting
+        </Reveal>
+        <div className="mt-8 grid gap-4 sm:gap-6 md:grid-cols-3">
+          <Figure media={about03} sizes="(min-width: 768px) 31vw, 100vw" rounded />
+          <Figure media={about04} sizes="(min-width: 768px) 31vw, 100vw" rounded />
+          <Figure media={about05} sizes="(min-width: 768px) 31vw, 100vw" rounded />
+        </div>
       </section>
 
       {/* CTA */}

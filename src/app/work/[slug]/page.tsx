@@ -87,7 +87,7 @@ export default async function CaseStudyPage({
         ]}
       />
       {/* Hero */}
-      <header className="relative flex min-h-svh flex-col justify-end overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
+      <header className="relative flex min-h-[68svh] flex-col justify-end overflow-hidden bg-(--color-ink) text-(--color-paper-on-dark)">
         <div
           className={`absolute inset-0${
             study.heroMedia.type !== "video" ? " cinematic-hero" : ""
@@ -143,15 +143,6 @@ export default async function CaseStudyPage({
           )}
         </div>
       </header>
-
-      {study.placeholder && (
-        <div className="border-b border-(--color-hairline) bg-(--color-accent-soft)/30">
-          <p className="container-page py-4 text-sm text-(--color-ink-soft)">
-            This case study is in preparation — copy and imagery are placeholders
-            pending client confirmation.
-          </p>
-        </div>
-      )}
 
       {/* The Client / The Challenge */}
       <section className="section container-page">

@@ -26,15 +26,17 @@ export default function SmoothScroll() {
       if (cancelled) return;
 
       const lenis = new Lenis({
-        // Frame-rate-independent exponential smoothing — the "butter" feel.
-        lerp: 0.1,
+        // Snappy, near-instant catch-up (was 0.1 — that long ~370ms trail read
+        // as scroll lag). 0.3 keeps just enough smoothing to de-step the wheel.
+        lerp: 0.3,
         smoothWheel: true,
-        wheelMultiplier: 1,
-        // Smooth on trackpads/touch too, without overshoot.
+        // A touch more distance per wheel/trackpad move so it feels fast.
+        wheelMultiplier: 1.25,
+        // Smooth on touch too, snappier.
         syncTouch: true,
-        touchMultiplier: 1.4,
-        // Keep programmatic scrollTo (anchors, route reset) eased.
-        duration: 1.1,
+        touchMultiplier: 2,
+        // Keep programmatic scrollTo (anchors, route reset) quick + eased.
+        duration: 0.8,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       });
       window.__lenis = lenis;

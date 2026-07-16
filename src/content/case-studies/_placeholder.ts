@@ -2,11 +2,12 @@ import type { CaseStudy, Discipline, Media } from "@/content/schema";
 import { img, loop } from "@/lib/media";
 
 /**
- * Builds a clearly-marked PLACEHOLDER case study. Copy is neutral and obviously
- * provisional, Pink Tree to confirm the client and supply real assets, copy
- * and results (see CONTENT-TODO.md). No client results are fabricated.
+ * Builds a case study from a compact spec: handles the hero (image or Veo
+ * hover-loop), the "The Work" gallery and SEO boilerplate, while the narrative
+ * copy (client, challenge, what we delivered) is supplied per study. No hard
+ * result metrics are invented — `results` stays empty until real figures exist.
  */
-export function placeholderStudy(opts: {
+export function buildStudy(opts: {
   slug: string;
   client: string;
   sector: string;
@@ -20,6 +21,11 @@ export function placeholderStudy(opts: {
   work?: Media[];
   /** Live website we built for this client, if published. */
   liveUrl?: string;
+  oneLineOutcome: string;
+  theClient: string;
+  theChallenge: string;
+  /** "What we delivered" summary, keyed by discipline. */
+  delivered: Partial<Record<Discipline, string>>;
 }): CaseStudy {
   const { slug, client, sector, order, disciplines, heroSrc, heroAlt, heroVideo } = opts;
   return {
@@ -27,25 +33,23 @@ export function placeholderStudy(opts: {
     client,
     sector,
     order,
-    placeholder: true,
+    placeholder: false,
     disciplines,
     heroMedia: heroVideo
       ? loop(heroSrc.replace(/\.[^.]+$/, ""), heroSrc, heroAlt, 2560, 1600)
       : img(heroSrc, heroAlt, 2560, 1600),
-    oneLineOutcome: "Case study in preparation.",
-    theClient:
-      "TODO: client to supply, a short paragraph introducing who they are.",
-    theChallenge:
-      "TODO: client to supply, a short paragraph on what they needed.",
+    oneLineOutcome: opts.oneLineOutcome,
+    theClient: opts.theClient,
+    theChallenge: opts.theChallenge,
     delivered: disciplines.map((area) => ({
       area,
-      summary: `TODO: client to supply, what Pink Tree delivered under ${area}.`,
+      summary: opts.delivered[area] ?? "",
     })),
     work: opts.work ?? [],
     results: [],
     seo: {
       title: `${client}, Case study`,
-      description: `A Pink Tree Media case study for ${client}. Details to follow.`,
+      description: `A Pink Tree Media case study for ${client}. ${opts.oneLineOutcome}`,
       ogImage: heroSrc,
     },
     liveUrl: opts.liveUrl,
