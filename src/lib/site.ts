@@ -34,9 +34,9 @@ export const CONTACT = {
   social: {
     handle: "@pinktreemediauk",
     instagram: "https://www.instagram.com/pinktreemediauk",
-    tiktok: "https://www.tiktok.com/@pinktreemediauk",
-    linkedin: "https://www.linkedin.com/company/pinktreemediauk",
-    youtube: "https://www.youtube.com/@pinktreemediauk",
+    tiktok: "https://www.tiktok.com/@pinktreemedia",
+    linkedin: "https://www.linkedin.com/company/pink-tree-media2",
+    youtube: "https://www.youtube.com/@PinkTreeMediauk",
   },
 } as const;
 
