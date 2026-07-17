@@ -1,22 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import WorkCard from "@/components/work/WorkCard";
 import GooeyNav from "@/components/layout/GooeyNav";
 import { loadGsap } from "@/lib/gsap";
 import { DISCIPLINES, type CaseStudy, type Discipline } from "@/content/schema";
 
 type Filter = "All" | Discipline;
-
-// GooeyNav is vendored (@ts-nocheck); type its props for this filter usage.
-const FilterNav = GooeyNav as unknown as ComponentType<{
-  items: { label: string; href: string }[];
-  onSelect?: (index: number) => void;
-  initialActiveIndex?: number;
-  particleCount?: number;
-  particleDistances?: [number, number];
-  particleR?: number;
-}>;
 
 export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
   const [filter, setFilter] = useState<Filter>("All");
@@ -86,15 +76,12 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
 
   return (
     <div className="relative">
-      {/* Filter — gooey nav (the same effect as the header) */}
+      {/* Filter — the same pills as the header */}
       <div className="sticky top-[var(--header-h)] z-20 mb-16 flex justify-start overflow-x-auto py-4">
-        <FilterNav
+        <GooeyNav
           items={filters.map((f) => ({ label: f.key, href: "#" }))}
           onSelect={(index) => setFilter(filters[index].key)}
           initialActiveIndex={0}
-          particleCount={12}
-          particleDistances={[60, 10]}
-          particleR={80}
         />
       </div>
 

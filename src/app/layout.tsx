@@ -5,7 +5,6 @@ import SmoothScroll from "@/components/providers/SmoothScroll";
 import RevealObserver from "@/components/providers/RevealObserver";
 import Cursor from "@/components/providers/Cursor";
 import PageTransition from "@/components/providers/PageTransition";
-import Preloader from "@/components/providers/Preloader";
 import SiteBackground from "@/components/layout/SiteBackground";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -69,7 +68,6 @@ export default function RootLayout({
       {/* suppressHydrationWarning: extensions (e.g. Bitdefender) inject bis_register/
           __processed_* attributes onto <body> before hydration — harmless mismatch. */}
       <body suppressHydrationWarning>
-        <Preloader />
         <SiteBackground />
         <SmoothScroll />
         <RevealObserver />

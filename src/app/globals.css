@@ -724,165 +724,6 @@
 }
 
 /* =============================================================================
-   Initial-load preloader (see Preloader.tsx). Full-screen paper overlay with the
-   gooey "young-walrus-64" metaball loader (Uiverse, MIT — andrew-manzyk),
-   retuned to the rosewood palette. Fades out once the page is ready.
-   ========================================================================== */
-.preloader {
-  position: fixed;
-  inset: 0;
-  z-index: 2000;
-  display: grid;
-  place-items: center;
-  background: var(--color-paper);
-  transition:
-    opacity 0.6s var(--ease-out-expo, ease),
-    visibility 0.6s var(--ease-out-expo, ease);
-}
-.preloader[data-done="true"] {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.loader {
-  --color-one: #c48d93; /* light rosewood */
-  --color-two: #8e4f57; /* deep rosewood (brand accent-ink) */
-  --color-three: #c48d9380;
-  --color-four: #8e4f5780;
-  --color-five: #c48d9340;
-  --time-animation: 2s;
-  --size: 1;
-  position: relative;
-  border-radius: 50%;
-  transform: scale(var(--size));
-  box-shadow:
-    0 0 25px 0 var(--color-three),
-    0 20px 50px 0 var(--color-four);
-  animation: colorize calc(var(--time-animation) * 3) ease-in-out infinite;
-}
-.loader::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border-top: solid 1px var(--color-one);
-  border-bottom: solid 1px var(--color-two);
-  background: linear-gradient(180deg, var(--color-five), var(--color-four));
-  box-shadow:
-    inset 0 10px 10px 0 var(--color-three),
-    inset 0 -10px 10px 0 var(--color-four);
-}
-.loader .box {
-  width: 100px;
-  height: 100px;
-  background: linear-gradient(180deg, var(--color-one) 30%, var(--color-two) 70%);
-  mask: url(#clipping);
-  -webkit-mask: url(#clipping);
-}
-.loader svg {
-  position: absolute;
-}
-.loader svg #clipping {
-  filter: contrast(15);
-  animation: roundness calc(var(--time-animation) / 2) linear infinite;
-}
-.loader svg #clipping polygon {
-  filter: blur(7px);
-}
-.loader svg #clipping polygon:nth-child(1) {
-  transform-origin: 75% 25%;
-  transform: rotate(90deg);
-}
-.loader svg #clipping polygon:nth-child(2) {
-  transform-origin: 50% 50%;
-  animation: rotation var(--time-animation) linear infinite reverse;
-}
-.loader svg #clipping polygon:nth-child(3) {
-  transform-origin: 50% 60%;
-  animation: rotation var(--time-animation) linear infinite;
-  animation-delay: calc(var(--time-animation) / -3);
-}
-.loader svg #clipping polygon:nth-child(4) {
-  transform-origin: 40% 40%;
-  animation: rotation var(--time-animation) linear infinite reverse;
-}
-.loader svg #clipping polygon:nth-child(5) {
-  transform-origin: 40% 40%;
-  animation: rotation var(--time-animation) linear infinite reverse;
-  animation-delay: calc(var(--time-animation) / -2);
-}
-.loader svg #clipping polygon:nth-child(6) {
-  transform-origin: 60% 40%;
-  animation: rotation var(--time-animation) linear infinite;
-}
-.loader svg #clipping polygon:nth-child(7) {
-  transform-origin: 60% 40%;
-  animation: rotation var(--time-animation) linear infinite;
-  animation-delay: calc(var(--time-animation) / -1.5);
-}
-
-@keyframes rotation {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-@keyframes roundness {
-  0% {
-    filter: contrast(15);
-  }
-  20% {
-    filter: contrast(3);
-  }
-  40% {
-    filter: contrast(3);
-  }
-  60% {
-    filter: contrast(15);
-  }
-  100% {
-    filter: contrast(15);
-  }
-}
-/* Full color-cycle like the original component — the loader visibly shifts hue
-   across the rosewood → magenta → violet range as it spins. */
-@keyframes colorize {
-  0% {
-    filter: hue-rotate(0deg);
-  }
-  20% {
-    filter: hue-rotate(-30deg);
-  }
-  40% {
-    filter: hue-rotate(-60deg);
-  }
-  60% {
-    filter: hue-rotate(-90deg);
-  }
-  80% {
-    filter: hue-rotate(-45deg);
-  }
-  100% {
-    filter: hue-rotate(0deg);
-  }
-}
-
-/* Reduced motion: freeze the loader; the preloader also self-dismisses instantly. */
-@media (prefers-reduced-motion: reduce) {
-  .loader,
-  .loader svg #clipping,
-  .loader svg #clipping polygon {
-    animation: none;
-  }
-}
-
-/* =============================================================================
    Hyperspeed background (see Hyperspeed.tsx / HyperspeedBg.tsx). Fills its
    positioned parent. The `canvas` rule is scoped to #lights so it can never
    affect the site's other WebGL canvases (BendVideo / BendImage).
@@ -931,33 +772,22 @@
 }
 
 /* =============================================================================
-   GooeyNav (see GooeyNav.tsx) — the nav lives inside a dark, isolated "island"
-   so its lighten-blend gooey pill + bubble particles read on BOTH the dark-hero
-   and light-scrolled header. Particles/pill retuned to the rosewood palette.
+   Nav / filter pills (see GooeyNav.tsx) — a dark "island" holding the pills.
+   Deliberately plain CSS. The previous build layered a blur(7px) contrast(100)
+   "gooey" metaball with mix-blend-mode: lighten over a backdrop-filter: Safari
+   renders extreme contrast with colour fringing (yellow halo) and repaints the
+   blur every frame. The active pill is now just a scaled background — identical
+   in every browser and composited on the GPU.
    ========================================================================== */
 .gooey-nav-container {
-  --color-1: #c98b93;
-  --color-2: #d8c2c5;
-  --color-3: #efeae1;
-  --color-4: #a86b72;
   position: relative;
-  isolation: isolate;
   border-radius: 100vw;
-  background: color-mix(in srgb, var(--color-ink) 88%, transparent);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  /* Clip the filter's black `::before` (inset -75px) to the island so it can't
-     leak as a black box beyond the dark backdrop. */
+  background: color-mix(in srgb, var(--color-ink) 94%, transparent);
   overflow: hidden;
-}
-/* No active route (e.g. home) → hide the gooey pill/text so nothing lingers. */
-.gooey-nav-container[data-active="false"] .effect {
-  opacity: 0;
 }
 .gooey-nav-container nav {
   display: flex;
   position: relative;
-  transform: translate3d(0, 0, 0.01px);
 }
 .gooey-nav-container nav ul {
   display: flex;
@@ -973,7 +803,7 @@
   border-radius: 100vw;
   position: relative;
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color 0.28s ease;
   color: var(--color-paper-on-dark);
   flex-shrink: 0; /* never squeeze/wrap the labels — the row scrolls instead */
 }
@@ -991,8 +821,10 @@
   border-radius: 100vw;
   background: var(--color-paper-on-dark);
   opacity: 0;
-  transform: scale(0);
-  transition: all 0.3s ease;
+  transform: scale(0.86);
+  transition:
+    opacity 0.28s ease,
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: -1;
 }
 .gooey-nav-container nav ul li.active {
@@ -1001,123 +833,6 @@
 .gooey-nav-container nav ul li.active::after {
   opacity: 1;
   transform: scale(1);
-}
-.gooey-nav-container .effect {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 0;
-  height: 0;
-  opacity: 1;
-  pointer-events: none;
-  display: grid;
-  place-items: center;
-  z-index: 1;
-}
-.gooey-nav-container .effect.text {
-  color: var(--color-paper-on-dark);
-  font-size: 0.875rem;
-  transition: color 0.3s ease;
-}
-.gooey-nav-container .effect.text.active {
-  color: var(--color-ink);
-}
-.gooey-nav-container .effect.filter {
-  filter: blur(7px) contrast(100) blur(0);
-  mix-blend-mode: lighten;
-}
-.gooey-nav-container .effect.filter::before {
-  content: "";
-  position: absolute;
-  inset: -75px;
-  z-index: -2;
-  background: black;
-}
-.gooey-nav-container .effect.filter::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--color-paper-on-dark);
-  transform: scale(0);
-  opacity: 0;
-  z-index: -1;
-  border-radius: 100vw;
-}
-.gooey-nav-container .effect.active::after {
-  animation: gooey-pill 0.3s ease both;
-}
-@keyframes gooey-pill {
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-.gooey-nav-container .particle,
-.gooey-nav-container .point {
-  display: block;
-  opacity: 0;
-  width: 18px;
-  height: 18px;
-  border-radius: 100%;
-  transform-origin: center;
-}
-.gooey-nav-container .particle {
-  --time: 5s;
-  position: absolute;
-  top: calc(50% - 8px);
-  left: calc(50% - 8px);
-  animation: gooey-particle calc(var(--time)) ease 1 -350ms;
-}
-.gooey-nav-container .point {
-  background: var(--color);
-  opacity: 1;
-  animation: gooey-point calc(var(--time)) ease 1 -350ms;
-}
-@keyframes gooey-particle {
-  0% {
-    transform: rotate(0deg) translate(calc(var(--start-x)), calc(var(--start-y)));
-    opacity: 1;
-    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
-  }
-  70% {
-    transform: rotate(calc(var(--rotate) * 0.5)) translate(calc(var(--end-x) * 1.2), calc(var(--end-y) * 1.2));
-    opacity: 1;
-    animation-timing-function: ease;
-  }
-  85% {
-    transform: rotate(calc(var(--rotate) * 0.66)) translate(calc(var(--end-x)), calc(var(--end-y)));
-    opacity: 1;
-  }
-  100% {
-    transform: rotate(calc(var(--rotate) * 1.2)) translate(calc(var(--end-x) * 0.5), calc(var(--end-y) * 0.5));
-    opacity: 1;
-  }
-}
-@keyframes gooey-point {
-  0% {
-    transform: scale(0);
-    opacity: 0;
-    animation-timing-function: cubic-bezier(0.55, 0, 1, 0.45);
-  }
-  25% {
-    transform: scale(calc(var(--scale) * 0.25));
-  }
-  38% {
-    opacity: 1;
-  }
-  65% {
-    transform: scale(var(--scale));
-    opacity: 1;
-    animation-timing-function: ease;
-  }
-  85% {
-    transform: scale(var(--scale));
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0);
-    opacity: 0;
-  }
 }
 
 /* Cinematic hero — a living film still: slow Ken Burns drift + candlelight

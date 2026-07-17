@@ -55,7 +55,10 @@ export default function Header() {
           menuOpen
             ? // Above the menu overlay (z-900) so the close button + logo stay visible.
               "z-[1000] text-(--color-paper-on-dark)"
-            : "z-[800] text-(--color-ink) data-[over-hero=true]:text-(--color-paper-on-dark) data-[scrolled=true]:border-b data-[scrolled=true]:border-(--color-hairline) data-[scrolled=true]:bg-(--color-paper)/80 data-[scrolled=true]:backdrop-blur-md"
+            // No backdrop-blur: this bar is fixed, so Safari re-blurs the
+            // backdrop on every scroll frame (a top cause of janky scrolling).
+            // At 96% opacity the blur was barely visible anyway.
+            : "z-[800] text-(--color-ink) data-[over-hero=true]:text-(--color-paper-on-dark) data-[scrolled=true]:border-b data-[scrolled=true]:border-(--color-hairline) data-[scrolled=true]:bg-(--color-paper)/96"
         }`}
       >
         <div className="container-page flex h-[var(--header-h,5rem)] items-center justify-between">
@@ -64,13 +67,7 @@ export default function Header() {
           </TransitionLink>
 
           <div className="hidden items-center gap-6 md:flex">
-            <GooeyNav
-              items={NAV}
-              initialActiveIndex={-1}
-              particleCount={12}
-              particleDistances={[60, 10]}
-              particleR={80}
-            />
+            <GooeyNav items={NAV} initialActiveIndex={-1} />
             <div className="flex items-center gap-4">
               <a
                 href={CONTACT.social.instagram}

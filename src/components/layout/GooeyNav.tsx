@@ -1,196 +1,67 @@
-/* eslint-disable */
-// @ts-nocheck
 "use client";
-// Vendored/adapted from React Bits — GooeyNav. Adapted for this site: the active
-// item follows the current route (usePathname), and clicks route through the
-// page-transition curtain (useTransitionNavigate) instead of a hard <a> nav.
-import { useRef, useEffect, useState } from "react";
+
+import { useEffect, useState, type MouseEvent } from "react";
 import { usePathname } from "next/navigation";
 import { useTransitionNavigate } from "@/components/providers/PageTransition";
 
-const GooeyNav = ({
-  items,
-  animationTime = 600,
-  particleCount = 15,
-  particleDistances = [90, 10],
-  particleR = 100,
-  timeVariance = 300,
-  colors = [1, 2, 3, 1, 2, 3, 1, 4],
-  initialActiveIndex = 0,
-  onSelect = undefined,
-}) => {
-  const containerRef = useRef(null);
-  const navRef = useRef(null);
-  const filterRef = useRef(null);
-  const textRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
+type Item = { label: string; href: string };
 
+type Props = {
+  items: readonly Item[];
+  /** -1 = no pill (e.g. the header on routes that aren't in the nav). */
+  initialActiveIndex?: number;
+  /** Filter mode: clicks drive a local selection instead of routing. */
+  onSelect?: (index: number) => void;
+};
+
+/**
+ * The nav / filter pills: a dark island with a pill behind the active item.
+ *
+ * Deliberately plain. The previous version (vendored React Bits "GooeyNav") drew
+ * the pill as a metaball — blur(7px) contrast(100) with mix-blend-mode: lighten
+ * over a backdrop-filter, plus per-click particle spans. Safari renders extreme
+ * contrast with colour fringing (a yellow halo round the pill) and repaints the
+ * blur every frame. The pill is now a plain scaled background: identical in every
+ * browser, GPU-composited, and no per-frame filter work.
+ */
+export default function GooeyNav({ items, initialActiveIndex = 0, onSelect }: Props) {
+  const [activeIndex, setActiveIndex] = useState(initialActiveIndex);
   const pathname = usePathname();
   const navigate = useTransitionNavigate();
-  // Tab mode: when an onSelect handler is given, clicks drive a local selection
-  // (e.g. a filter) instead of routing, and the active pill follows clicks only.
   const isTabMode = typeof onSelect === "function";
 
-  const routeIndex = () =>
-    items.findIndex(
-      (it) => it.href === pathname || (it.href !== "/" && pathname.startsWith(it.href)),
+  // Route mode: the pill follows the current path — the header persists across
+  // navigations, so it can't rely on clicks alone.
+  useEffect(() => {
+    if (isTabMode) return;
+    setActiveIndex(
+      items.findIndex(
+        (it) => it.href === pathname || (it.href !== "/" && pathname.startsWith(it.href)),
+      ),
     );
+  }, [pathname, isTabMode, items]);
 
-  const noise = (n = 1) => n / 2 - Math.random() * n;
-
-  const getXY = (distance, pointIndex, totalPoints) => {
-    const angle = ((360 + noise(8)) / totalPoints) * pointIndex * (Math.PI / 180);
-    return [distance * Math.cos(angle), distance * Math.sin(angle)];
-  };
-
-  const createParticle = (i, t, d, r) => {
-    let rotate = noise(r / 10);
-    return {
-      start: getXY(d[0], particleCount - i, particleCount),
-      end: getXY(d[1] + noise(7), particleCount - i, particleCount),
-      time: t,
-      scale: 1 + noise(0.2),
-      color: colors[Math.floor(Math.random() * colors.length)],
-      rotate: rotate > 0 ? (rotate + r / 20) * 10 : (rotate - r / 20) * 10,
-    };
-  };
-
-  const makeParticles = (element) => {
-    const d = particleDistances;
-    const r = particleR;
-    const bubbleTime = animationTime * 2 + timeVariance;
-    element.style.setProperty("--time", `${bubbleTime}ms`);
-
-    for (let i = 0; i < particleCount; i++) {
-      const t = animationTime * 2 + noise(timeVariance * 2);
-      const p = createParticle(i, t, d, r);
-      element.classList.remove("active");
-
-      setTimeout(() => {
-        const particle = document.createElement("span");
-        const point = document.createElement("span");
-        particle.classList.add("particle");
-        particle.style.setProperty("--start-x", `${p.start[0]}px`);
-        particle.style.setProperty("--start-y", `${p.start[1]}px`);
-        particle.style.setProperty("--end-x", `${p.end[0]}px`);
-        particle.style.setProperty("--end-y", `${p.end[1]}px`);
-        particle.style.setProperty("--time", `${p.time}ms`);
-        particle.style.setProperty("--scale", `${p.scale}`);
-        particle.style.setProperty("--color", `var(--color-${p.color}, white)`);
-        particle.style.setProperty("--rotate", `${p.rotate}deg`);
-
-        point.classList.add("point");
-        particle.appendChild(point);
-        element.appendChild(particle);
-        requestAnimationFrame(() => {
-          element.classList.add("active");
-        });
-        setTimeout(() => {
-          try {
-            element.removeChild(particle);
-          } catch {
-            // Do nothing
-          }
-        }, t);
-      }, 30);
-    }
-  };
-
-  const updateEffectPosition = (element) => {
-    if (!containerRef.current || !filterRef.current || !textRef.current) return;
-    const containerRect = containerRef.current.getBoundingClientRect();
-    const pos = element.getBoundingClientRect();
-
-    const styles = {
-      left: `${pos.x - containerRect.x}px`,
-      top: `${pos.y - containerRect.y}px`,
-      width: `${pos.width}px`,
-      height: `${pos.height}px`,
-    };
-    Object.assign(filterRef.current.style, styles);
-    Object.assign(textRef.current.style, styles);
-    textRef.current.innerText = element.innerText;
-  };
-
-  const runEffect = (index) => {
-    const liEl = navRef.current?.querySelectorAll("li")[index];
-    if (!liEl) return;
-    setActiveIndex(index);
-    updateEffectPosition(liEl.querySelector("a") ?? liEl);
-
-    if (filterRef.current) {
-      const particles = filterRef.current.querySelectorAll(".particle");
-      particles.forEach((p) => filterRef.current.removeChild(p));
-    }
-    if (textRef.current) {
-      textRef.current.classList.remove("active");
-      void textRef.current.offsetWidth;
-      textRef.current.classList.add("active");
-    }
-    if (filterRef.current) makeParticles(filterRef.current);
-  };
-
-  const handleClick = (e, index, href) => {
+  const handleClick = (e: MouseEvent, index: number, href: string) => {
     e.preventDefault();
-    if (activeIndex !== index) runEffect(index);
-    if (isTabMode) onSelect(index);
+    setActiveIndex(index);
+    if (onSelect) onSelect(index);
     else navigate(href); // route through the transition curtain
   };
 
-  const handleKeyDown = (e, index, href) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleClick(e, index, href);
-    }
-  };
-
-  // Keep the active pill synced to the current route (header persists across
-  // navigations, so the pill must follow the pathname, not just clicks).
-  useEffect(() => {
-    if (isTabMode) return; // filter mode manages its own selection
-    const idx = routeIndex();
-    if (idx >= 0) setActiveIndex(idx);
-    else setActiveIndex(-1);
-  }, [pathname]);
-
-  useEffect(() => {
-    if (!navRef.current || !containerRef.current) return;
-    const activeLi = navRef.current.querySelectorAll("li")[activeIndex];
-    if (activeLi) {
-      updateEffectPosition(activeLi.querySelector("a") ?? activeLi);
-      textRef.current?.classList.add("active");
-    }
-
-    const resizeObserver = new ResizeObserver(() => {
-      const currentActiveLi = navRef.current?.querySelectorAll("li")[activeIndex];
-      if (currentActiveLi) updateEffectPosition(currentActiveLi.querySelector("a") ?? currentActiveLi);
-    });
-
-    resizeObserver.observe(containerRef.current);
-    return () => resizeObserver.disconnect();
-  }, [activeIndex]);
-
   return (
-    <div className="gooey-nav-container" ref={containerRef} data-active={activeIndex >= 0}>
+    <div className="gooey-nav-container" data-active={activeIndex >= 0}>
       <nav>
-        <ul ref={navRef}>
+        <ul>
           {items.map((item, index) => (
             <li key={item.label} className={activeIndex === index ? "active" : ""}>
-              <a
-                href={item.href}
-                onClick={(e) => handleClick(e, index, item.href)}
-                onKeyDown={(e) => handleKeyDown(e, index, item.href)}
-              >
+              {/* A real anchor: Enter activates it natively, and it's crawlable. */}
+              <a href={item.href} onClick={(e) => handleClick(e, index, item.href)}>
                 {item.label}
               </a>
             </li>
           ))}
         </ul>
       </nav>
-      <span className="effect filter" ref={filterRef} />
-      <span className="effect text" ref={textRef} />
     </div>
   );
-};
-
-export default GooeyNav;
+}
