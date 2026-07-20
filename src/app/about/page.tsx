@@ -57,13 +57,15 @@ export default function AboutPage() {
         </div>
       </header>
 
-      {/* Lead image */}
-      <Figure media={about02} sizes="(min-width: 1600px) 1600px, 100vw" rounded parallax className="mb-(--section-y)" />
+      {/* Lead image — the LCP element; preload it eagerly (was lazy-loaded). */}
+      <Figure media={about02} sizes="(min-width: 1600px) 1600px, 100vw" rounded parallax priority className="mb-(--section-y)" />
 
       {/* Blocks */}
       <section className="grid gap-x-16 gap-y-16 pb-(--section-y) md:grid-cols-2">
         <div className="md:sticky md:top-[calc(var(--header-h)+2rem)] md:self-start">
-          <Figure media={about01} sizes="(min-width: 768px) 46vw, 100vw" rounded />
+          {/* On mobile this portrait image is the largest in-fold element (the
+              LCP) — preload it too, not just the wide lead image above. */}
+          <Figure media={about01} sizes="(min-width: 768px) 46vw, 100vw" rounded priority />
         </div>
         <dl className="flex flex-col">
           {BLOCKS.map((b, i) => (

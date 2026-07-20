@@ -25,6 +25,8 @@ type Props = {
   noBend?: boolean;
   /** Play video on hover (Cuberto-style) rather than ambiently in view. */
   hoverPlay?: boolean;
+  /** Mark this card's media as the LCP hero (first card) — preload eagerly. */
+  priority?: boolean;
 };
 
 export default function WorkCard({
@@ -37,6 +39,7 @@ export default function WorkCard({
   bare = false,
   noBend = false,
   hoverPlay = false,
+  priority = false,
 }: Props) {
   const aspect = ratio ?? (feature ? "16 / 10" : "4 / 3");
   const imgSizes = sizes ?? (feature ? "100vw" : "(min-width: 768px) 50vw, 100vw");
@@ -51,12 +54,12 @@ export default function WorkCard({
     >
       {study.heroMedia.type === "video" ? (
         hoverPlay ? (
-          <HoverVideo media={study.heroMedia} sizes={imgSizes} />
+          <HoverVideo media={study.heroMedia} sizes={imgSizes} priority={priority} />
         ) : (
-          <Video media={study.heroMedia} fill sizes={imgSizes} />
+          <Video media={study.heroMedia} fill sizes={imgSizes} eager={priority} />
         )
       ) : noBend ? (
-        <Img media={study.heroMedia} fill sizes={imgSizes} className="size-full" />
+        <Img media={study.heroMedia} fill sizes={imgSizes} priority={priority} className="size-full" />
       ) : (
         <BendImage
           src={study.heroMedia.src}

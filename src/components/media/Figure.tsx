@@ -13,6 +13,8 @@ type Props = {
   rounded?: boolean;
   /** Subtle vertical parallax within an over-sized frame (no edge gaps). */
   parallax?: boolean;
+  /** Mark as the LCP hero — preloads eagerly instead of lazy-loading. */
+  priority?: boolean;
 };
 
 /**
@@ -27,14 +29,15 @@ export default function Figure({
   caption = false,
   rounded = true,
   parallax = false,
+  priority = false,
 }: Props) {
   const radius = rounded ? "rounded-[var(--radius-sm)]" : "";
 
   const inner =
     media.type === "video" ? (
-      <Video media={media} fill sizes={sizes} />
+      <Video media={media} fill sizes={sizes} eager={priority} />
     ) : (
-      <Img media={media} fill sizes={sizes} />
+      <Img media={media} fill sizes={sizes} priority={priority} />
     );
 
   return (

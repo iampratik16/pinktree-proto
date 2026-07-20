@@ -36,6 +36,8 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
   useEffect(() => {
     const grid = gridRef.current;
     if (!grid) return;
+    // The first (LCP) card carries no [data-grid-item], so it's already excluded
+    // here — it paints immediately instead of waiting on GSAP + the opacity gate.
     const items = Array.from(grid.querySelectorAll<HTMLElement>("[data-grid-item]"));
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
@@ -96,20 +98,26 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
               c === 1 ? "md:mt-[16vh]" : ""
             }`}
           >
-            {col.map((study, i) => (
-              <div key={study.slug} data-grid-item>
-                <WorkCard
-                  study={study}
-                  index={studies.indexOf(study) + 1}
-                  headingLevel="h2"
-                  bare
-                  noBend
-                  hoverPlay
-                  ratio={i % 2 === 0 ? "4 / 5" : "5 / 6"}
-                  sizes="(min-width: 768px) 46vw, 100vw"
-                />
-              </div>
-            ))}
+            {col.map((study, i) => {
+              // The top-left card is the LCP hero: preload it AND let it paint
+              // immediately — no [data-grid-item] means no opacity:0 reveal gate.
+              const isLcp = c === 0 && i === 0;
+              return (
+                <div key={study.slug} data-grid-item={isLcp ? undefined : ""}>
+                  <WorkCard
+                    study={study}
+                    index={studies.indexOf(study) + 1}
+                    headingLevel="h2"
+                    bare
+                    noBend
+                    hoverPlay
+                    priority={isLcp}
+                    ratio={i % 2 === 0 ? "4 / 5" : "5 / 6"}
+                    sizes="(min-width: 768px) 46vw, 100vw"
+                  />
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>

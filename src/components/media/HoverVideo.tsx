@@ -9,6 +9,8 @@ type Props = {
   media: VideoMedia;
   className?: string;
   sizes?: string;
+  /** Preload the poster eagerly (the LCP hero, e.g. the first Work card). */
+  priority?: boolean;
 };
 
 /**
@@ -18,7 +20,7 @@ type Props = {
  * get the poster only (never loads the video). The video is mounted on first hover
  * and kept for instant replays.
  */
-export default function HoverVideo({ media, className = "", sizes = "50vw" }: Props) {
+export default function HoverVideo({ media, className = "", sizes = "50vw", priority = false }: Props) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [canHover, setCanHover] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -68,6 +70,7 @@ export default function HoverVideo({ media, className = "", sizes = "50vw" }: Pr
         alt={media.alt}
         fill
         sizes={sizes}
+        priority={priority}
         placeholder={blur ? "blur" : "empty"}
         blurDataURL={blur}
         className={`object-cover transition-opacity duration-500 ${
