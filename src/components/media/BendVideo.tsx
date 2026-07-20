@@ -95,14 +95,89 @@ export default function BendVideo({ media, className = "", sizes = "100vw" }: Pr
   const [playing, setPlaying] = useState(false);
   const blur = getBlur(media.poster);
 
-  // Poster-only under reduced motion or Data-Saver. The video DOES play on
-  // phones (plain autoplay loop — muted + playsInline); WebGL bend is desktop-
-  // only (the hover check below short-circuits on touch).
+  // The video plays on EVERY screen now, phones included — mobile just gets the
+  // lighter 480p cut (see the load effect). Only reduced-motion and Data-Saver
+  // stay poster-only; the poster <Image> always paints the hero instantly first.
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
-    if (reduced || nav.connection?.saveData === true) setPosterOnly(true);
+    if (reduced || nav.connection?.saveData === true) {
+      setPosterOnly(true);
+    }
   }, []);
+
+  // Load the clip through the Cache API and play it from a blob URL, deferred to
+  // AFTER the page has loaded (never competes with first paint).
+  //
+  // Why not just point <video> at the file: Safari fetches <video> via HTTP range
+  // requests, which it refuses to persist in its cache — so it re-downloads the
+  // whole clip on EVERY visit regardless of cache headers. A normal fetch() is a
+  // full (non-range) request that Safari DOES cache, and the Cache API persists
+  // it across visits. So: fetch once → cache → replay from a blob forever after.
+  // Falls back to a direct src if CacheStorage/fetch is unavailable.
+  useEffect(() => {
+    if (posterOnly) return;
+    const video = videoRef.current;
+    if (!video) return;
+    // h264 mp4 plays reliably everywhere (Safari's webm support is patchy).
+    const pick =
+      media.sources.find((s) => /mp4/.test(s.type)) ??
+      media.sources[media.sources.length - 1];
+    if (!pick) return;
+
+    // Phones play the lighter 480p cut: "-480" before the extension, keeping any
+    // ?v= cache token (e.g. home.mp4?v=4 → home-480.mp4?v=4).
+    const isMobile = window.matchMedia("(max-width: 767px), (hover: none)").matches;
+    const url = isMobile ? pick.src.replace(/\.mp4(\?|$)/, "-480.mp4$1") : pick.src;
+
+    let objectUrl: string | null = null;
+    let cancelled = false;
+
+    const load = async () => {
+      // Mobile: point <video> straight at the small 480p file. A blob URL is less
+      // reliable for inline muted autoplay on iOS, and 480p is light enough that
+      // caching matters little. Desktop: load via the Cache API so Safari stops
+      // re-downloading the full clip on every visit.
+      if (isMobile) {
+        video.muted = true; // iOS requires the muted PROPERTY for inline autoplay
+        video.preload = "auto"; // 480p is light — load it so it can start
+        video.src = url;
+        video.load();
+        void video.play().catch(() => {});
+        return;
+      }
+      try {
+        if (!("caches" in window)) throw new Error("no CacheStorage");
+        const cache = await caches.open("pt-hero-v4");
+        let resp = await cache.match(url);
+        if (!resp) {
+          const net = await fetch(url); // full request → cacheable in Safari
+          if (!net.ok) throw new Error(`fetch ${net.status}`);
+          await cache.put(url, net.clone());
+          resp = net;
+        }
+        const blob = await resp.blob();
+        if (cancelled) return;
+        objectUrl = URL.createObjectURL(blob);
+        video.src = objectUrl;
+      } catch {
+        if (!cancelled) video.src = url; // fallback: browser fetches directly
+      }
+      void video.play().catch(() => {});
+    };
+
+    let id = 0;
+    const start = () => void load();
+    if (document.readyState === "complete") id = window.setTimeout(start, 200);
+    else window.addEventListener("load", start, { once: true });
+
+    return () => {
+      cancelled = true;
+      if (id) window.clearTimeout(id);
+      window.removeEventListener("load", start);
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [posterOnly, media.sources]);
 
   // WebGL fluid bend (desktop, hover-capable). Uses the <video> as the texture.
   useEffect(() => {
@@ -316,16 +391,11 @@ export default function BendVideo({ media, className = "", sizes = "100vw" }: Pr
           muted
           loop
           playsInline
-          autoPlay
-          preload="auto"
+          preload="none"
           aria-hidden
           onPlaying={() => setPlaying(true)}
           className="absolute inset-0 size-full object-cover transition-opacity duration-500"
-        >
-          {media.sources.map((s) => (
-            <source key={s.src} src={s.src} type={s.type} />
-          ))}
-        </video>
+        />
       )}
 
       {/* WebGL fluid surface mounts here. */}

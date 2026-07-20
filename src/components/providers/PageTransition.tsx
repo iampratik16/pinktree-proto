@@ -22,8 +22,11 @@ export function useTransitionNavigate(): Navigate {
   return ctx ?? ((href: string) => { window.location.href = href; });
 }
 
-const COVER_MS = 620;
-const REVEAL_MS = 720;
+// Kept short on purpose: a route curtain feels premium at ~400–500ms and feels
+// broken (like latency) past ~1s. Must match the CSS transition durations on
+// .page-curtain[data-phase] in globals.css.
+const COVER_MS = 400;
+const REVEAL_MS = 460;
 
 /**
  * Cinematic cover/wipe between routes — no white flash. A warm panel sweeps up

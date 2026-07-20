@@ -38,6 +38,10 @@ export default function TransitionLink({ href, onClick, ...props }: Props) {
   return (
     <Link
       href={href}
+      // Don't prefetch every in-viewport route on load (that pulls each linked
+      // page's RSC + chunks up front, competing with the critical load). We
+      // prefetch on hover instead — navigation stays instant, first load is lighter.
+      prefetch={false}
       onClick={handleClick}
       onMouseEnter={() => isInternal && router.prefetch(href)}
       {...props}
