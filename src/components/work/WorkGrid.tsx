@@ -78,8 +78,9 @@ export default function WorkGrid({ studies }: { studies: CaseStudy[] }) {
 
   return (
     <div className="relative">
-      {/* Filter — the same pills as the header */}
-      <div className="sticky top-[var(--header-h)] z-20 mb-16 flex justify-start overflow-x-auto py-4">
+      {/* Filter — the same pills as the header. overflow-x-auto lets the row
+          scroll on narrow screens; the scrollbar is hidden for a clean edge. */}
+      <div className="sticky top-[var(--header-h)] z-20 mb-16 flex justify-start overflow-x-auto py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <GooeyNav
           items={filters.map((f) => ({ label: f.key, href: "#" }))}
           onSelect={(index) => setFilter(filters[index].key)}

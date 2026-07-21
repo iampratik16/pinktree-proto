@@ -528,12 +528,13 @@
     transform: translate(-50%, 0);
   }
 
-  [data-reveal] {
-    will-change: transform, opacity;
-  }
   html.js [data-reveal]:not(.is-in) {
     opacity: 0;
     transform: translateY(28px);
+    /* will-change only while pending — once .is-in is set the layer is released
+       (was permanent on every reveal element site-wide, which pins compositor
+       layers forever and costs memory on weak devices). */
+    will-change: transform, opacity;
   }
   html.js [data-reveal] {
     transition:
@@ -722,6 +723,19 @@
 @media (prefers-reduced-motion: reduce) {
   .site-bg > span {
     animation: none;
+    will-change: auto;
+  }
+}
+
+/* Touch devices (typically weaker GPUs / phones) freeze the ambient blobs and
+   drop their compositor-layer promotion. Four >viewport-size 50px-blur layers
+   drifting forever is real fill-rate cost that competes with scrolling; static
+   and un-promoted they paint once into the fixed backdrop — identical colours,
+   only the very slow drift stops (imperceptible), and scroll gets smoother. */
+@media (pointer: coarse) {
+  .site-bg > span {
+    animation: none;
+    will-change: auto;
   }
 }
 
@@ -786,6 +800,11 @@
   border-radius: 100vw;
   background: color-mix(in srgb, var(--color-ink) 94%, transparent);
   overflow: hidden;
+  /* Never shrink below the pills' width: in a narrow flex parent the island
+     would otherwise compress and overflow:hidden would clip the last pills
+     with no way to reach them. At full width the row overflows its scroll
+     container instead, so it scrolls horizontally (the /work filter). */
+  flex-shrink: 0;
 }
 .gooey-nav-container nav {
   display: flex;
