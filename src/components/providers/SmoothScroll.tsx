@@ -35,9 +35,13 @@ export default function SmoothScroll() {
         // Smooth on touch too, snappier.
         syncTouch: true,
         touchMultiplier: 2,
-        // Keep programmatic scrollTo (anchors, route reset) quick + eased.
-        duration: 0.8,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        // NOTE: do NOT set `duration`/`easing` here. Lenis treats them as global
+        // defaults, not scrollTo-only, and its advance() is
+        // `if (duration && easing) {...} else if (lerp) {...}` — so setting them
+        // silently DISABLED the lerp above and ran a fresh 0.8s eased animation
+        // on every wheel tick, re-targeted each event. That is what made
+        // scrolling feel floaty and laggy. Pass duration/easing per call to
+        // lenis.scrollTo() if a programmatic scroll ever needs easing.
       });
       window.__lenis = lenis;
 

@@ -167,13 +167,28 @@ export default function BendVideo({ media, className = "", sizes = "100vw" }: Pr
     };
 
     let id = 0;
-    const start = () => void load();
+    let ric = 0;
+    // The clip is the single heaviest asset on the page (~700KB even as the
+    // 480p mobile cut). Firing straight off `load` was not enough: `load` can
+    // land inside the critical window, and the download then competed with the
+    // fonts and the LCP image — measured finishing at 747ms on the live site,
+    // which is what wrecked Speed Index. Wait for real idle instead; the poster
+    // is already painted, so nothing is visibly missing while we wait.
+    const start = () => {
+      if (cancelled) return;
+      if (typeof window.requestIdleCallback === "function") {
+        ric = window.requestIdleCallback(() => void load(), { timeout: 2500 });
+      } else {
+        id = window.setTimeout(() => void load(), 1500);
+      }
+    };
     if (document.readyState === "complete") id = window.setTimeout(start, 200);
     else window.addEventListener("load", start, { once: true });
 
     return () => {
       cancelled = true;
       if (id) window.clearTimeout(id);
+      if (ric && typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(ric);
       window.removeEventListener("load", start);
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
@@ -243,7 +258,12 @@ export default function BendVideo({ media, className = "", sizes = "100vw" }: Pr
           const rect = wrap.getBoundingClientRect();
           const w = Math.max(1, rect.width);
           const h = Math.max(1, rect.height);
-          renderer.dpr = Math.min(window.devicePixelRatio || 1, 2);
+          // Honour the 1.5 cap set at construction — this line used to reset it
+          // to 2, silently undoing it. This surface re-uploads a full video
+          // frame to the GPU AND runs a full-viewport shader every tick, so at
+          // dpr 2 on a Retina display it is ~5.2 megapixels/frame competing with
+          // scrolling. 1.5 is ~2.9MP; invisible on a moving video texture.
+          renderer.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
           renderer.setSize(w, h);
           canvas.style.width = "100%";
           canvas.style.height = "100%";
